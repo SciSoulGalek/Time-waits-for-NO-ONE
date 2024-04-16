@@ -1,0 +1,28 @@
+Game lab 9
+KBTU GO
+location: Almaty
+4 game screens , 4 general 
+1 - menu screen 
+2 - choosing screen (bus or car)
+Game:
+1 - get the bus or labirint for car (Galymhan)
+2 - Eathquake (Ayaulym)
+3 - Aliens (Nazerke)
+Win/lose screen 
+
+# First day 
+Game desighners (Dayana, Amir)
+1. Creating backgrounds for 3 games and menu screen (According to sample of programmers)
+2. Character (from up and side perspective)
+3. Bus, Bus station, cars (first-game)
+4. Earth break, lava(second-game)
+5. Alien dish (third-game)
+
+
+# First day 
+Programmers(Ayaulym, Nazerke , Galymzhan)
+1. Creating model of the game (send them to desighners )
+2. Develop logic of the game (comment actions )
+3. Moves of the character
+4. Setting a timer for the game 
+5. Bonus coins and tomatoes (any picture for now)
