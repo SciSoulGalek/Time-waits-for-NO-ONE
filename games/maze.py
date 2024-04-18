@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.rect = pygame.Rect(20, 20, 20, 20)
-        self.image = pygame.image.load("maze/player.png")
+        self.image = pygame.image.load("sprites/maze/player.png")
         self.counter = 3
  
     def move(self, dx, dy):
@@ -60,7 +60,7 @@ class Wall(pygame.sprite.Sprite):
         super().__init__()
         walls.append(self)
         self.rect = pygame.Rect(pos[0], pos[1], 20, 20)
-        self.image = pygame.image.load("maze/wall.png")
+        self.image = pygame.image.load("sprites/maze/wall.png")
         
 class Key(pygame.sprite.Sprite):
      
@@ -68,7 +68,7 @@ class Key(pygame.sprite.Sprite):
          super().__init__()
          keys.append(self)
          self.rect = pygame.Rect(pos[0], pos[1],20,20)
-         self.image = pygame.image.load("maze/key.png")
+         self.image = pygame.image.load("sprites/maze/key.png")
 
 class Door(pygame.sprite.Sprite):
      
@@ -76,7 +76,7 @@ class Door(pygame.sprite.Sprite):
          super().__init__()
          doors.append(self)
          self.rect = pygame.Rect(pos[0], pos[1],20,20)
-         self.image = pygame.image.load("maze/door.png")   
+         self.image = pygame.image.load("sprites/maze/door.png")   
 
 class Escape(pygame.sprite.Sprite):
 
@@ -84,7 +84,7 @@ class Escape(pygame.sprite.Sprite):
          super().__init__()
          escapes.append(self)
          self.rect = pygame.Rect(pos[0],pos[1],20,20)  
-         self.image = pygame.image.load("maze/exit.png")      
+         self.image = pygame.image.load("sprites/maze/exit.png")      
 
 
 pygame.init()
