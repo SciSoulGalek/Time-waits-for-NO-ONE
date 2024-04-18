@@ -1,5 +1,5 @@
 import pygame, sys
-import bus_stop
+import choose_menu, bus_stop, maze
 
 #Initialize Pygame
 pygame.init()
@@ -14,6 +14,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+
+font = pygame.font.Font(None, 36)
 
 # Button class
 class Button:
@@ -62,6 +64,7 @@ def main_menu():
     menu = Menu()
 
     running = True
+    choosing_game = False
     while running:
         if pygame.display.get_init():  # Check if Pygame display is initialized
             screen.fill(WHITE)
@@ -72,7 +75,11 @@ def main_menu():
                 running = False
             action = menu.handle_event(event)
             if action == 1:
-                bus_stop.play()
+                chose = choose_menu.activate()
+                if chose == 1:
+                    bus_stop.play()
+                elif chose == 2:
+                    maze.play()
             elif action == 2:
                 print("Options button clicked")
                 # Add your options logic here
@@ -97,6 +104,6 @@ def options_menu():
 # Return to main menu function
 def return_to_main_menu():
     main_menu()
-    
+
 # Run main menu
 main_menu()
