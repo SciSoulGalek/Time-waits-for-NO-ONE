@@ -1,5 +1,5 @@
 import pygame, sys
-import choose_menu, bus_stop, maze
+import choose_menu, bus, maze
 
 #Initialize Pygame
 pygame.init()
@@ -82,7 +82,7 @@ def main_menu():
             if action == 1:
                 chose = choose_menu.activate(text)
                 if chose == 1:
-                    bus_stop.play(text)
+                    bus.play(text)
                 elif chose == 2:
                     maze.play()
             elif action == 2:
