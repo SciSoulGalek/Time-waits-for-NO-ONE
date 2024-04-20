@@ -69,15 +69,20 @@ def main_menu():
         if pygame.display.get_init():  # Check if Pygame display is initialized
             screen.fill(WHITE)
             menu.draw(screen)
+            time: int = 30
+            text = str(time)
+            text_surface = font.render(text, True, BLACK)
+            text_rect = text_surface.get_rect()
+            screen.blit(text_surface, text_rect)
             pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             action = menu.handle_event(event)
             if action == 1:
-                chose = choose_menu.activate()
+                chose = choose_menu.activate(text)
                 if chose == 1:
-                    bus_stop.play()
+                    bus_stop.play(text)
                 elif chose == 2:
                     maze.play()
             elif action == 2:

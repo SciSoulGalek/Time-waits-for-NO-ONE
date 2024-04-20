@@ -1,4 +1,4 @@
-def play():
+def play(text):
     import pygame
     import random
     # Initialize Pygame
@@ -11,6 +11,7 @@ def play():
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
     BLUE = (0, 0, 255)
+    font = pygame.font.Font(None, 36)
     bus_stop_rect = pygame.Rect(0, 150, 1100, 550)
     # Player
     class Player(pygame.sprite.Sprite):
@@ -153,6 +154,9 @@ def play():
         # Draw everything
         screen.fill(WHITE)
         pygame.draw.rect(screen, 'gray', bus_stop_rect)
+        text_surface = font.render(text, True, 'BLACK')
+        text_rect = text_surface.get_rect()
+        screen.blit(text_surface, text_rect)
         screen.blit(player.image, player.rect)
         pygame.draw.rect(screen, RED, (bus_x, bus_y, bus_width, bus_height))
         if bus_stopped:
@@ -162,3 +166,6 @@ def play():
 
         pygame.display.flip()
         clock.tick(60)
+
+if __name__ == '__main__':
+    play()
