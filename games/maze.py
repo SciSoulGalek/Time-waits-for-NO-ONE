@@ -153,7 +153,6 @@ def play(text):
         y += 20
         x = 0
 
-    text1 = font.render('Door Opened! Find Exit!', True, WHITE)
     running = True
     while running:
     
@@ -189,7 +188,6 @@ def play(text):
         if player.counter == 0:
             door.rect.x = 2000
             door.rect.y = 2000
-            screen.blit(text1,(200,700))
 
         pygame.draw.rect(screen, (0, 0, 0), player.rect)
         all_sprites_list.draw(screen)

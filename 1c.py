@@ -15,9 +15,9 @@ scroll_th= 200
 #define game variables
 tile_size = 55
 game_over=0
-bgsound = pygame.mixer.Sound("sound/bc.mp3")
+bgsound = pygame.mixer.Sound("sound/earthquake/bc.mp3")
 bgsound.play()
-de=pygame.mixer.Sound("sound/de.mp3")
+de=pygame.mixer.Sound("sound/earthquake/de.mp3")
 class Player():
     def __init__(self, x, y):
         self.images_r=[]
@@ -26,7 +26,7 @@ class Player():
         self.count=0
         self.direction=0
         for i in range(1,5):
-            imgr = pygame.image.load(f'png/{i}.png')
+            imgr = pygame.image.load(f'sprites/earthquake/png/{i}.png')
             imgr = pygame.transform.scale(imgr, (40, 80))
             imgl = pygame.transform.flip(imgr,True,False)
             self.images_r.append(imgr)
@@ -137,9 +137,9 @@ class World():
         self.grass_tiles = []
 
         #load images
-        dirt_img = pygame.image.load('png/dirt.png')
-        grass_img = pygame.image.load('png/grass.png')
-        lava_img=pygame.image.load('png/lava.png')
+        dirt_img = pygame.image.load('sprites/earthquake/png/dirt.png')
+        grass_img = pygame.image.load('sprites/earthquake/png/grass.png')
+        lava_img=pygame.image.load('sprites/earthquake/png/lava.png')
 
         row_count = 0
         for row in data:
@@ -208,7 +208,7 @@ class World():
 class lava(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load("png/lava.png")
+        self.image=pygame.image.load("sprites/earthquake/png/lava.png")
         self.image = pygame.transform.scale(self.image, (tile_size, tile_size))
         self.rect=self.image.get_rect()
         self.rect.x=x
@@ -216,7 +216,7 @@ class lava(pygame.sprite.Sprite):
 class Coin(pygame.sprite.Sprite):
 	def __init__(self, x, y):
 		pygame.sprite.Sprite.__init__(self)
-		img = pygame.image.load('png/coin.png')
+		img = pygame.image.load('sprites/earthquake/png/coin.png')
 		self.image = pygame.transform.scale(img, (tile_size // 2, tile_size // 2))
 		self.rect = self.image.get_rect()
 		self.rect.center = (x, y)
@@ -251,8 +251,8 @@ fps=60
 clock = pygame.time.Clock()  # Create a clock object to control frame rate
 
 run = True
-lose_screem=pygame.image.load("png/d-2.jpg")
-background_image=pygame.image.load("png/hell-2.jpg")
+lose_screem=pygame.image.load("sprites/earthquake/png/d-2.jpg")
+background_image=pygame.image.load("sprites/earthquake/png/hell-2.jpg")
 
 start_time = pygame.time.get_ticks()  # Get the current time in milliseconds
 game_time = 120  # 2 minutes in seconds

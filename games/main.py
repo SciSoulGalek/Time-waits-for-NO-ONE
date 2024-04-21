@@ -15,6 +15,7 @@ BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
+background = pygame.image.load("sprites/main/room/room1.png")
 font = pygame.font.Font(None, 36)
 
 # Button class
@@ -62,12 +63,11 @@ class Menu:
 # Main menu loop
 def main_menu():
     menu = Menu()
-
     running = True
-    choosing_game = False
+
     while running:
         if pygame.display.get_init():  # Check if Pygame display is initialized
-            screen.fill(WHITE)
+            screen.blit(background, (0, 0))
             menu.draw(screen)
             time: int = 30
             text = str(time)
