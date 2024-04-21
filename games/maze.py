@@ -68,7 +68,7 @@ def play(text):
     font = pygame.font.SysFont('Aries', 40)
     all_sprites_list = pygame.sprite.Group()
     
-    pygame.display.set_caption("Maze game")
+    pygame.display.set_caption("Find the way to KBTU")
     screen = pygame.display.set_mode((1100, 700))
     
     clock = pygame.time.Clock()

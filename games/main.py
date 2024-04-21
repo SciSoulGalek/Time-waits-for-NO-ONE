@@ -7,7 +7,7 @@ pygame.init()
 # Set up the display
 WIDTH, HEIGHT = 1100, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("KBTU GO!")
+pygame.display.set_caption("Time waits for NO ONE")
 
 # Colors
 WHITE = (255, 255, 255)
@@ -18,21 +18,32 @@ RED = (255, 0, 0)
 background = pygame.image.load("sprites/main/room/room1.png")
 font = pygame.font.Font(None, 36)
 
+button_size = (225, 75)
+start_sprite = pygame.image.load("sprites/main/start.png")
+start_sprite = pygame.transform.scale(start_sprite, button_size)
+options_sprite = pygame.image.load("sprites/main/options.png")
+options_sprite = pygame.transform.scale(options_sprite, button_size)
+quit_sprite = pygame.image.load("sprites/main/quit.png")
+quit_sprite = pygame.transform.scale(quit_sprite, button_size)
+
+
+# Darken the background image
+dark_overlay = pygame.Surface((WIDTH, HEIGHT))
+darkness = 200
+dark_overlay.set_alpha(darkness)  # Set transparency (0 = fully transparent, 255 = fully opaque)
+dark_overlay.fill((0, 0, 0))  # Fill with black color
+
 # Button class
 class Button:
-    def __init__(self, text, x, y, width, height, color, hover_color, action):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-        self.hover_color = hover_color
-        self.text = text
-        self.font = pygame.font.Font(None, 36)
+    def __init__(self, source, x, y, action):
+        self.x = x
+        self.y = y
+        self.source = source
+        self.rect = self.source.get_rect(topleft=(self.x, self.y))
         self.action = action
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
-        text_surface = self.font.render(self.text, True, BLACK)
-        text_rect = text_surface.get_rect(center=self.rect.center)
-        surface.blit(text_surface, text_rect)
+        surface.blit(self.source, (self.x, self.y))
 
     def check_hover(self, pos):
         return self.rect.collidepoint(pos)
@@ -41,12 +52,12 @@ class Button:
 class Menu:
     def __init__(self):
         self.buttons = []
-        self.add_button("Start", WIDTH // 2 - 100, 200, 200, 50, GREEN, RED, 1)
-        self.add_button("Options", WIDTH // 2 - 100, 300, 200, 50, GREEN, RED, 2)
-        self.add_button("Quit", WIDTH // 2 - 100, 400, 200, 50, GREEN, RED, 3)
+        self.add_button(start_sprite, WIDTH // 2 - button_size[0] // 2, 400, 1)
+        self.add_button(options_sprite, WIDTH // 2 - button_size[0] // 2, 500, 2)
+        self.add_button(quit_sprite, WIDTH // 2 - button_size[0] // 2, 600, 3)
 
-    def add_button(self, text, x, y, width, height, color, hover_color, action):
-        button = Button(text, x, y, width, height, color, hover_color, action)
+    def add_button(self, source, x, y, action):
+        button = Button(source, x, y, action)
         self.buttons.append(button)
 
     def draw(self, surface):
@@ -68,7 +79,10 @@ def main_menu():
     while running:
         if pygame.display.get_init():  # Check if Pygame display is initialized
             screen.blit(background, (0, 0))
+            # Draw the dark overlay on top
+            screen.blit(dark_overlay, (0, 0))
             menu.draw(screen)
+
             time: int = 30
             text = str(time)
             text_surface = font.render(text, True, BLACK)
@@ -80,7 +94,7 @@ def main_menu():
                 running = False
             action = menu.handle_event(event)
             if action == 1:
-                chose = choose_menu.activate(text)
+                chose = choose_menu.activate(darkness)
                 if chose == 1:
                     bus.play(text)
                 elif chose == 2:

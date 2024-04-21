@@ -1,4 +1,4 @@
-def activate(text): 
+def activate(darkness_number): 
     import pygame
     import sys
     pygame.init()
@@ -8,44 +8,80 @@ def activate(text):
     pygame.display.set_caption("Choose a game!")
     font = pygame.font.Font(None, 36)
 
+    background = pygame.image.load("sprites/main/room/room1.png")
+
+    choose_bus = pygame.image.load("sprites/choose_menu/choose_bus.png")
+    choose_bus = pygame.transform.scale(choose_bus, (300, 300))
+    choose_bus_rect = choose_bus.get_rect(topleft = (150, 200))
+    choose_car = pygame.image.load("sprites/choose_menu/choose_car.png")
+    choose_car = pygame.transform.scale(choose_car, (300, 300))
+    choose_car_rect = choose_car.get_rect(topleft = (650, 200))
+    main_menu = pygame.image.load("sprites/choose_menu/main_menu.png")
+    main_menu = pygame.transform.scale(main_menu, (150, 50))
+    main_menu_rect = main_menu.get_rect(topleft = (50, 50))
+    skip = pygame.image.load("sprites/main/skip.png")
+    skip_rect = main_menu.get_rect(topleft = (900, 600))
+
+    # Darken the background image
+    dark_overlay = pygame.Surface((WIDTH, HEIGHT))
+    darkness = darkness_number
+    dark_overlay.set_alpha(darkness)  # Set transparency (0 = fully transparent, 255 = fully opaque)
+    dark_overlay.fill((0, 0, 0)) 
+
+    #Adding a new User event(speed increases every second) 
+    timer = pygame.USEREVENT + 1
+    pygame.time.set_timer(timer, 1000)
+    
     cutscene = True
     
     while True:
         if cutscene:
-            for event in pygame.event.get():
+            for event in pygame.event.get():  
                 if event.type == pygame.QUIT:
                     return
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    cutscene = False
-            screen.fill((255, 255, 255))
+                    pos = pygame.mouse.get_pos()
+                    # Check if the mouse click is within the back button
+                    if skip_rect.collidepoint(pos):
+                        cutscene = False
+
+            if darkness != 0:
+                darkness -= 1
+                dark_overlay.set_alpha(darkness)
+            else:
+                cutscene = False
+
+            screen.blit(background, (0, 0))
+            # Draw the dark overlay on top
+            screen.blit(dark_overlay, (0, 0))
             something = 'This is cutscene'
             something_surface = font.render(something, True, 'black')
             screen.blit(something_surface, (WIDTH // 2, HEIGHT // 2))
+            screen.blit(skip, (900, 600))
             pygame.display.update()
         else:  
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return  
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
                     # Check if the mouse click is within the back button
-                    if 50 <= event.pos[0] <= 250 and 50 <= event.pos[1] <= 100:
-                        return
-
+                    if main_menu_rect.collidepoint(pos):
+                        return 0
+                    
                     # Check if the mouse click is within game 1 area
-                    if 150 <= event.pos[0] <= 450 and 200 <= event.pos[1] <= 500:
+                    if choose_bus_rect.collidepoint(pos):
                         # Start game 1
                         return 1
 
                     # Check if the mouse click is within game 2 area
-                    if 650 <= event.pos[0] <= 950 and 200 <= event.pos[1] <= 500:
+                    if choose_car_rect.collidepoint(pos):
                         # Start game 2
                         return 2
 
             # Draw the game selection screen
             screen.fill((255, 255, 255))
-            pygame.draw.rect(screen, (0, 0, 255), (150, 200, 300, 300))
-            pygame.draw.rect(screen, (0, 0, 255), (650, 200, 300, 300))
-            pygame.draw.rect(screen, (255, 0, 0), (50, 50, 200, 50))  # Back button
-            text_surface = font.render(text, True, 'BLACK')
-            screen.blit(text_surface, (1055, 25))
+            screen.blit(main_menu, (50, 50))
+            screen.blit(choose_bus, (150, 200))
+            screen.blit(choose_car, (650, 200))
             pygame.display.update()
