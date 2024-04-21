@@ -1,5 +1,5 @@
 import pygame, sys
-import choose_menu, bus, maze
+import choose_menu, bus, maze, earthquake
 
 #Initialize Pygame
 pygame.init()
@@ -26,13 +26,13 @@ options_sprite = pygame.transform.scale(options_sprite, button_size)
 quit_sprite = pygame.image.load("sprites/main/quit.png")
 quit_sprite = pygame.transform.scale(quit_sprite, button_size)
 
-
 # Darken the background image
 dark_overlay = pygame.Surface((WIDTH, HEIGHT))
 darkness = 200
 dark_overlay.set_alpha(darkness)  # Set transparency (0 = fully transparent, 255 = fully opaque)
 dark_overlay.fill((0, 0, 0))  # Fill with black color
 
+timer: str = ''
 # Button class
 class Button:
     def __init__(self, source, x, y, action):
@@ -82,12 +82,6 @@ def main_menu():
             # Draw the dark overlay on top
             screen.blit(dark_overlay, (0, 0))
             menu.draw(screen)
-
-            time: int = 30
-            text = str(time)
-            text_surface = font.render(text, True, BLACK)
-            text_rect = text_surface.get_rect()
-            screen.blit(text_surface, text_rect)
             pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -96,9 +90,11 @@ def main_menu():
             if action == 1:
                 chose = choose_menu.activate(darkness)
                 if chose == 1:
-                    bus.play(text)
+                    bus.play()
                 elif chose == 2:
-                    maze.play(text)
+                    win, timer = maze.play()
+                    if win:
+                        earthquake.play(timer)
             elif action == 2:
                 print("Options button clicked")
                 # Add your options logic here

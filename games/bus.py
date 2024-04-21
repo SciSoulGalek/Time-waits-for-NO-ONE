@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 SCORE = 0
 
-def play(text):
+def play():
     #Imports
     import random, time, sys
     from datetime import datetime
