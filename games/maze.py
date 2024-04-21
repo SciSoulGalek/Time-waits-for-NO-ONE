@@ -15,6 +15,7 @@ def play(text):
             super().__init__()
             self.rect = pygame.Rect(20, 20, 20, 20)
             self.image = pygame.image.load("sprites/maze/player.png")
+            self.image = pygame.transform.scale(self.image, (16, 20))
             self.counter = 3
     
         def move(self, dx, dy):
@@ -39,16 +40,6 @@ def play(text):
                         self.rect.bottom = wall.rect.top
                     if dy < 0: # Moving up; Hit the bottom side of the wall
                         self.rect.top = wall.rect.bottom
-            for door in doors:
-                if self.rect.colliderect(door.rect):
-                    if dx > 0: # Moving right; Hit the left side of the wall
-                        self.rect.right = door.rect.left
-                    if dx < 0: # Moving left; Hit the right side of the wall
-                        self.rect.left = door.rect.right
-                    if dy > 0: # Moving down; Hit the top side of the wall
-                        self.rect.bottom = door.rect.top
-                    if dy < 0: # Moving up; Hit the bottom side of the wall
-                        self.rect.top = door.rect.bottom
 
             for key in keys:
                 if self.rect.colliderect(key.rect):
@@ -63,15 +54,7 @@ def play(text):
             super().__init__()
             walls.append(self)
             self.rect = pygame.Rect(pos[0], pos[1], 20, 20)
-            self.image = pygame.image.load("sprites/maze/wall.png")
-
-    class Door(pygame.sprite.Sprite):
-
-         def __init__(self,pos):
-             super().__init__()
-             doors.append(self)
-             self.rect = pygame.Rect(pos[0], pos[1],20,20)
-             self.image = pygame.image.load("sprites/maze/door.png")   
+            self.image = pygame.image.load("sprites/maze/wall.png")  
 
     class Escape(pygame.sprite.Sprite):
 
@@ -90,7 +73,6 @@ def play(text):
     
     clock = pygame.time.Clock()
     escapes = []
-    doors = []
     keys = []
     walls = [] 
     player = Player() 
@@ -147,15 +129,12 @@ def play(text):
                 escape = Escape((x,y))
                 pygame.draw.rect(screen,(255,255,255),escape.rect)
                 all_sprites_list.add(escape)
-            if col == "D":
-                Door((x,y))
             x += 20
         y += 20
         x = 0
 
     running = True
     while running:
-    
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 running = False
@@ -175,19 +154,13 @@ def play(text):
 
         if player.rect.colliderect(escape.rect):
             running = False
-        screen.fill((0, 0, 0))
+        screen.fill('Gray')
         for wall in walls:
             pygame.draw.rect(screen, (0, 0, 0), wall.rect)
             all_sprites_list.add(wall)
         for key in keys:
             pygame.draw.rect(screen,(0,0,0), key.rect)
             all_sprites_list.add(key)
-        for door in doors:
-            pygame.draw.rect(screen,(0,0,0), door.rect)
-            all_sprites_list.add(door)
-        if player.counter == 0:
-            door.rect.x = 2000
-            door.rect.y = 2000
 
         pygame.draw.rect(screen, (0, 0, 0), player.rect)
         all_sprites_list.draw(screen)
