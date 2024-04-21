@@ -5,6 +5,7 @@ SCORE = 0
 def play(text):
     #Imports
     import random, time, sys
+    from datetime import datetime
     
     #Initializing 
     pygame.init()
@@ -167,6 +168,9 @@ def play(text):
     HS = f.readline()
     HS = int(HS)
     
+    #Start time
+    start_time = datetime.now()
+
     #Adding a new User event(speed increases every second) 
     INC_SPEED = pygame.USEREVENT + 1
     pygame.time.set_timer(INC_SPEED, 1000)
@@ -182,6 +186,18 @@ def play(text):
             if event.type == QUIT:
                 pygame.mixer.music.stop()
                 return
+            
+        # Calculate elapsed time
+        elapsed_time = datetime.now() - start_time
+        # Convert elapsed time to a string
+        timer_text = str(elapsed_time)
+        # Extract minutes and seconds
+        minutes = elapsed_time.seconds // 60
+        seconds = elapsed_time.seconds % 60
+        # Format minutes and seconds into a string
+        timer_text = "{:02}:{:02}".format(minutes, seconds)
+
+
         #Move the background to create animation effect
         background_x -= SPEED - 0.4
         if -background_x >= SCREEN_WIDTH:
@@ -207,9 +223,10 @@ def play(text):
         DISPLAYSURF.blit(scores, (10,30))
         coins = font_small.render(str(COINS), True, BLACK)
         DISPLAYSURF.blit(coins, (360,10))
-        text_surface = font.render(text, True, 'BLACK')
-        text_rect = text_surface.get_rect()
-        DISPLAYSURF.blit(text_surface, text_rect)
+
+        # Render text
+        text_surface = font.render(timer_text, True, (255, 255, 255))
+        DISPLAYSURF.blit(text_surface, (SCREEN_WIDTH // 2 - text_surface.get_width() // 2, SCREEN_HEIGHT // 2 - text_surface.get_height() // 2))
 
         if SPEED < 10:
             speed = font_small.render(f'Speed:{str(round(SPEED, 2))}', True, BLACK)
@@ -246,6 +263,7 @@ def play(text):
 
         #Game over part
         if pygame.sprite.spritecollideany(P1, enemies) or FUEL < 0:
+            pygame.mixer.music.stop()
             pygame.mixer.Sound('sound/bus/crash.wav').play()
             time.sleep(1)
             #Save the highscore
