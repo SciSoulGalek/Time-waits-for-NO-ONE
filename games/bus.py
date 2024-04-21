@@ -31,6 +31,7 @@ def play(text):
     
     #Setting up Fonts
     font = pygame.font.SysFont("Verdana", 60)
+    font_normal = pygame.font.SysFont("Verdana", 40)
     font_small = pygame.font.SysFont("Verdana", 20)
     game_over = font.render("Game Over", True, BLACK)
     
@@ -225,8 +226,8 @@ def play(text):
         DISPLAYSURF.blit(coins, (360,10))
 
         # Render text
-        text_surface = font.render(timer_text, True, (255, 255, 255))
-        DISPLAYSURF.blit(text_surface, (SCREEN_WIDTH // 2 - text_surface.get_width() // 2, SCREEN_HEIGHT // 2 - text_surface.get_height() // 2))
+        text_surface = font_normal.render(timer_text, True, (255, 255, 255))
+        DISPLAYSURF.blit(text_surface, (1100 - text_surface.get_width(), 0))
 
         if SPEED < 10:
             speed = font_small.render(f'Speed:{str(round(SPEED, 2))}', True, BLACK)

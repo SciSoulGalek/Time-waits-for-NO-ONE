@@ -3,6 +3,7 @@ def play(text):
     import sys
     import random
     import pygame
+    from datetime import datetime
     pygame.init()
 
     # colors
@@ -82,12 +83,12 @@ def play(text):
 
 
     level =  [
-    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW   ",
-    "W   W        W     W        W      W               W   ",
-    "W W W WW WWWWWWWW WWWW WWWW WWWWW  W  WWWWWWWWWWWW W   ",
-    "W W             W       W             W          W WWWW",
-    "W     WWWWWWW WWWWWWWW  W WWWWWWWWWWWWW WWW WWWW W    W",
-    "WWW    W     W        W     W           W    W W WWWW W",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW     ",
+    "W   W        W     W        W      W             W     ",
+    "W W W WW WWWWWWWW WWWW WWWW WWWWW  W  WWWWWWWWWW W     ",
+    "W W             W       W             W          WWWWWW",
+    "W     WWWWWWW WWWWWWWW  W WWWWWWWWWWWWW WWW WWWW      W",
+    "WWW    W     W        W     W           W    W WWWWWW W",
     "W WWWW W WWW W WWWWW WWWW  WW WWWW W WWWW  WWW W      W",
     "W W        W             W  W  W     W       W WWWW WWW",
     "W WWWWWWWW WWWWW WWWW WWWW  W   WWWW   WWWWW W W  W W W",
@@ -133,6 +134,9 @@ def play(text):
         y += 20
         x = 0
 
+    #Start time
+    start_time = datetime.now()
+
     running = True
     while running:
         for e in pygame.event.get():
@@ -140,6 +144,16 @@ def play(text):
                 running = False
             if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
                 running = False
+
+        # Calculate elapsed time
+        elapsed_time = datetime.now() - start_time
+        # Convert elapsed time to a string
+        timer_text = str(elapsed_time)
+        # Extract minutes and seconds
+        minutes = elapsed_time.seconds // 60
+        seconds = elapsed_time.seconds % 60
+        # Format minutes and seconds into a string
+        timer_text = "{:02}:{:02}".format(minutes, seconds)
 
 
         key = pygame.key.get_pressed()
@@ -164,8 +178,11 @@ def play(text):
 
         pygame.draw.rect(screen, (0, 0, 0), player.rect)
         all_sprites_list.draw(screen)
-        text_surface = font.render(text, True, 'WHITE')
-        screen.blit(text_surface, (1055, 25))
+        
+        # Render text
+        text_surface = font.render(timer_text, True, (255, 255, 255))
+        screen.blit(text_surface, (1050 - text_surface.get_width() // 2, 20))
+        
         pygame.display.update()
         clock.tick(100)
 
