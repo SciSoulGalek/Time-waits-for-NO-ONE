@@ -10,6 +10,15 @@ def activate(darkness_number):
 
     background = pygame.image.load("sprites/main/room/room1.png")
 
+    animation = []
+    animation.append(background)
+    room2 = pygame.image.load("sprites/main/room/room2.png")
+    animation.append(room2)
+    room3 = pygame.image.load("sprites/main/room/room3.png")
+    animation.append(room3)
+    room4 = pygame.image.load("sprites/main/room/room4.png")
+    animation.append(room4)
+
     choose_bus = pygame.image.load("sprites/choose_menu/choose_bus.png")
     choose_bus = pygame.transform.scale(choose_bus, (300, 300))
     choose_bus_rect = choose_bus.get_rect(topleft = (150, 200))
@@ -28,15 +37,17 @@ def activate(darkness_number):
     dark_overlay.set_alpha(darkness)  # Set transparency (0 = fully transparent, 255 = fully opaque)
     dark_overlay.fill((0, 0, 0)) 
 
-    #Adding a new User event(speed increases every second) 
-    timer = pygame.USEREVENT + 1
-    pygame.time.set_timer(timer, 1000)
+    timer = 0
+    TIMER = pygame.USEREVENT + 1
+    pygame.time.set_timer(TIMER, 1000)
     
     cutscene = True
     
     while True:
         if cutscene:
             for event in pygame.event.get():  
+                if event.type == TIMER:
+                    timer += 1
                 if event.type == pygame.QUIT:
                     return
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -45,17 +56,19 @@ def activate(darkness_number):
                     if skip_rect.collidepoint(pos):
                         cutscene = False
 
-            if darkness != 0:
-                darkness -= 1
-                dark_overlay.set_alpha(darkness)
+            if timer != 10:
+                if darkness != 0:
+                    darkness -= 1
+                    dark_overlay.set_alpha(darkness)
+                screen.blit(animation[timer % 4], (0, 0))
+                screen.blit(dark_overlay, (0, 0))
+                screen.blit(skip, (900, 600))
             else:
                 cutscene = False
 
-            screen.blit(background, (0, 0))
             # Draw the dark overlay on top
-            screen.blit(dark_overlay, (0, 0))
             something = 'This is cutscene'
-            something_surface = font.render(something, True, 'black')
+            something_surface = font.render(something, True, 'white')
             screen.blit(something_surface, (WIDTH // 2, HEIGHT // 2))
             screen.blit(skip, (900, 600))
             pygame.display.update()

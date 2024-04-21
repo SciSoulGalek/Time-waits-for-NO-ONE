@@ -69,8 +69,7 @@ def play(text):
     class Player(pygame.sprite.Sprite):
         def __init__(self):
             super().__init__() 
-            self.image = pygame.image.load("sprites/bus/Player.png")
-            self.image = pygame.transform.rotate(self.image, -90)
+            self.image = pygame.image.load("sprites/bus/bus.png")
             self.rect = self.image.get_rect()
             self.rect.center = (160, 520)
             
