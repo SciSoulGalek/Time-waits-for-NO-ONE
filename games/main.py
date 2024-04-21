@@ -84,7 +84,7 @@ def main_menu():
                 if chose == 1:
                     bus.play(text)
                 elif chose == 2:
-                    maze.play()
+                    maze.play(text)
             elif action == 2:
                 print("Options button clicked")
                 # Add your options logic here

@@ -1,4 +1,4 @@
-def play():
+def play(text):
     import os
     import sys
     import random
@@ -100,40 +100,40 @@ def play():
 
 
     level =  [
-    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "W   W        W     W        W      W                  W",
-    "W W W WW WWWWWWWW WWWW WWWW WWWWW  W                  W",
-    "W W             W       W                             W",
-    "W     WWWWWWW WWWWWWWW  W WWWWWWWWWW                  W",
-    "WWW    W     W        W     W                         W",
-    "W WWWW W WWW W WWWWW WWWW  WW WWWW W W                W",
-    "W W        W             W  W  W     W                W",
-    "W WWWWWWWW WWWWW WWWW WWWW  W   WWW                   W",
-    "W        W      W     W     W   W    W                W",
-    "WWWWW WWWW  WWWWWW WWWW  WWWWWW  WWW W                W",
-    "W      W        W   W           W W                   W",
-    "W WW WWWWWWWWWW WWWWW WWWWW W   WW                    W",
-    "W W    W      W    WW     W    WW  WW                 W",
-    "W WW WWWW WWWWWW WWWWW  WWWW WWWW WW                  W",
-    "W W           W      W        W     WW                W",
-    "W W  WW WWWWW WWWW W WWW WWWWWWWW W                   W",
-    "W W   W    W         W        W     W                 W",
-    "W WWWWW WWWW WWWWWWW WWWW WWWWW WWW W                 W",
-    "W     W    W   W        W    W   W   W                W",
-    "W WWWWWWWWWW WWWW WWWWWWWWWW WWW W W                  W",
-    "W W      W    W         W           W                 W",
-    "W W  WWWWWWWWWWWWWW  W WWWWWWWWWW  W                  W",
-    "W W          W       W     W        W                 W",
-    "W WW WWWWWWW W WWWWWWW WWWWWW WWWWWW                  W",
-    "W W   W    W   W    W  W  W   W                       W",
-    "W     W WW WWWWW WW W WW  W W W                       W",
-    "W WWWWW W         W W     W W W                       W",
-    "W   W   WWWWWWWWWWW WWWWW W W W                       W",
-    "W W W WWW         W       W W W                       W",
-    "W W W   WW W  W W WWWWWWWWW W W         W      W      W",
-    "W W W W    WWWW W       W W W W         W      W      W",
-    "W WWW W WWWW    WWW WWWWW   W           WWWW WWWWW WWWW",
-    "W     W      W  W         W W W         W            EW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW   ",
+    "W   W        W     W        W      W               W   ",
+    "W W W WW WWWWWWWW WWWW WWWW WWWWW  W  WWWWWWWWWWWW W   ",
+    "W W             W       W             W          W WWWW",
+    "W     WWWWWWW WWWWWWWW  W WWWWWWWWWWWWW WWW WWWW W    W",
+    "WWW    W     W        W     W           W    W W WWWW W",
+    "W WWWW W WWW W WWWWW WWWW  WW WWWW W WWWW  WWW W      W",
+    "W W        W             W  W  W     W       W WWWW WWW",
+    "W WWWWWWWW WWWWW WWWW WWWW  W   WWWW   WWWWW W W  W W W",
+    "W        W      W     W     W   W    W   W     WW   W W",
+    "WWWWW WWWW  WWWWWW WWWW  WWWWWW  WWW WW  WWWWW  W WWW W",
+    "W      W        W   W           WWW   W      WW W W   W",
+    "W WW WWWWWWWWWW WWWWW WWWWW W   W   W WWWW W  W W   WWW",
+    "W W    W      W    WW     W     W W W W    WW W WW    W",
+    "W WW WWWW WWWWWW WWWWW  WWWW WWWW WW   W W  W W   W  WW",
+    "W W           W      W        W     WW   WW W W W  W  W",
+    "W W  WW WWWWW WWWW W WWW WWWWWWWW W   WW  W W   WW W  W",
+    "W W   W    W         W        W     W  WWWW WWWW      W",
+    "W WWWWW WWWW WWWWWWW WWWW WWWWWWWWW WW         W WWWW W",
+    "W     W    W   W        W    W   W   WWWWWWWWW W W    W",
+    "W WWWWWWWWWW WWWW WWWWWWWWWW WWW WWW  W      W WWW WWWW",
+    "W W      W    W         W           W WW  WW   W      W",
+    "W W  WWWWWWWWWWWWWW  W WWWWWWWWWW  W   WW  WWWWW WWWW W",
+    "W W          W       W     W        W   WW     W      W",
+    "W WW WWWWWWW W WWWWWWW WWWWWW WWWWWWWWW WWWWW WWWW W WW",
+    "W W   W    W   W    W  W  W   W         W   W W    W  W",
+    "W     W WW WWWWW WW W WW  W W W WWW WWW W W W W WW WW W",
+    "W WWWWW W         W W     W W W   WWW   W W   W  W W  W",
+    "W   W   WWWWWWWWWWW WWWWW W W W W     W W WWWWWW W W WW",
+    "W W W WWW         W       W W W WWWW WWWW        W    W",
+    "W W W   WW W  W W WWWWWWWWW W W    W    W WWWW W WWWW W",
+    "W W W W    WWWW W       W W W WWWW WWW WW      W      W",
+    "W WWW W WWWW    WWW WWWWW   W    W   W  WWWW WWWWW WWWW",
+    "W     W      W  W         W W WW   W    W            EW",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
     ]
     
@@ -193,11 +193,9 @@ def play():
 
         pygame.draw.rect(screen, (0, 0, 0), player.rect)
         all_sprites_list.draw(screen)
-        #pygame.draw.circle(screen, BLACK,(player.rect.x + 8 , player.rect.y + 8), 1000, 950) #for limited vision, delete this line of code to remove limited vision
+        text_surface = font.render(text, True, 'WHITE')
+        screen.blit(text_surface, (1055, 25))
         pygame.display.update()
         clock.tick(100)
 
         pygame.display.update()
-
-if __name__ == '__main__':
-    play()

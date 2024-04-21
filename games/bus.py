@@ -181,8 +181,8 @@ def play(text):
                     SPEED += 0.05     
             #Quit
             if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+                pygame.mixer.music.stop()
+                return
         #Move the background to create animation effect
         background_x -= SPEED - 0.4
         if -background_x >= SCREEN_WIDTH:
@@ -260,7 +260,6 @@ def play(text):
             for entity in all_sprites:
                 entity.kill() 
             time.sleep(2)
-            pygame.quit()
-            sys.exit()        
+            return        
         pygame.display.update()
         FramePerSec.tick(FPS)
