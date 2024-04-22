@@ -119,7 +119,13 @@ def play(timer_text):
     
     # Create buttons for the first question
     create_buttons((WIDTH - RECT_WIDTH) // 2 + 120, (HEIGHT - RECT_HEIGHT) // 2 - 60)
-    
+    #lose screens 
+    lose_screem2=pygame.image.load("sprites/final/alien.png")
+    lose_screem1=pygame.image.load("sprites/final/alienh.png")
+    lose_screem3=pygame.image.load("sprites/main/yourelateloss.png")
+    #win screen 
+    win_screem2=pygame.image.load("sprites/final/win.png")
+    win_screem1=pygame.image.load("sprites/final/winh.png")
     timer = 0
     TIMER = pygame.USEREVENT + 1
     pygame.time.set_timer(TIMER, 250)
@@ -233,6 +239,16 @@ def play(timer_text):
             score_x = current_width - score_surface.get_width() - 20
             score_y = 20
             window.blit(score_surface, (score_x, score_y))
+            if score==5:
+                screen.blit(lose_screem1, (0, 0))
+                screen.blit(lose_screem2, (0, 200))
+                screen.blit(lose_screem3 , (380,150))
+            else:
+                screen.blit(win_screem1, (0, 0))
+                screen.blit(win_screem2, (0, 200))
+                
+        
+                
 
             # Check if time is up for the current question
             if remaining_time <= 0:
