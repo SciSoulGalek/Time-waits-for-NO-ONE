@@ -51,9 +51,9 @@ def play(timer):
     game_over=0
 
     #sound
-    bgsound = pygame.mixer.Sound("sound/bc.mp3")
-    de=pygame.mixer.Sound("sound/de.mp3")
-    earthqu=pygame.mixer.Sound("sound/quake.mp3")
+    bgsound = pygame.mixer.Sound("sound/earthquake/bc.mp3")
+    de=pygame.mixer.Sound("sound/earthquake/de.mp3")
+    earthqu=pygame.mixer.Sound("sound/earthquake/quake.mp3")
     class Button():
         def __init__(self, x, y, image):
             self.image = image
