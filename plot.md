@@ -8,7 +8,7 @@ Before the game begins, the player makes a choice on how the heroine will start 
 
 If Car is Chosen:
 Scene 2: The Car Journey
-The heroine chooses to drive, and now she must navigate a labyrinth of Almaty's streets in a certain amount of time.
+The heroine chooses to drive, and now she must navigate a maze of Almaty's streets in a certain amount of time.
  - She encounters apples along the way:
   - Red apples add time.
   - Green apples subtract time.
@@ -39,7 +39,7 @@ End of Game
 - The heroine learns about Python databases and completes her journey.
 
 Gameplay Mechanics:
-- Use arrow keys or touchscreen swipes to navigate the labyrinth or bus path.
+- Use arrow keys or touchscreen swipes to navigate the maze or bus path.
 - Collect red apples to add time to the clock.
 - Avoid green apples that subtract time.
 - quiz to outwit the alien.
