@@ -171,7 +171,7 @@ def play(timer):
             #load images
             dirt_img = pygame.image.load('sprites/earthquake/dirt.png')
             grass_img = pygame.image.load('sprites/earthquake/grass.png')
-            lava_img=pygame.image.load('sprites/earthquake/lava.png')
+            lava_img=pygame.image.load('sprites/earthquake/lava1.png')
     
             row_count = 0
             for row in data:
@@ -368,22 +368,24 @@ def play(timer):
         # Convert elapsed time to a string
         timer_text = str(elapsed_time)
         # Extract minutes and seconds
-        minutes = (elapsed_time.seconds + timer[0]) // 60 
-        seconds = (elapsed_time.seconds + timer[1]) % 60 
-
         # collision with coin 
         coin_collisions = pygame.sprite.spritecollide(player, coin_group, True)
         enemy_collisions = pygame.sprite.spritecollide(player, enemy_group, True)
         door_collision = pygame.sprite.spritecollide(player, exit_group, False)
-
-        if door_collision:
-            game_over = 1  # Set game_over to a value indicating victory
-            bgsound.stop()
+        
         for coin in coin_collisions:
             seconds += 5  # Add 5 seconds to the remaining time
 
         for e in enemy_collisions:
             seconds -= 5 
+            
+        minutes = (elapsed_time.seconds + timer[0]) // 60 
+        seconds = (elapsed_time.seconds + timer[1]) % 60 
+
+
+        if door_collision:
+            game_over = 1  # Set game_over to a value indicating victory
+            bgsound.stop()
             
 
         # Format the time as "MM:SS"
@@ -399,9 +401,10 @@ def play(timer):
                 screen.blit(coin.image, (coin.rect.x - scroll[0], coin.rect.y - scroll[1]))
             for e in enemy_group:
                 screen.blit(e.image, (e.rect.x - scroll[0], e.rect.y - scroll[1]))
-            screen.blit(timer_text, (20, 20))
+            screen.blit(timer_surface, (1030, 10))
 
 
         pygame.display.update()
     
         clock.tick(fps)  # Limit frame rate to 30 frames per second
+play((0, 0))

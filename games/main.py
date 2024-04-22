@@ -1,5 +1,5 @@
 import pygame, sys
-import choose_menu, bus, maze, last_earthquake_with_timer_changed_do_not_touch_please as earthquake
+import choose_menu, bus, maze
 
 #Initialize Pygame
 pygame.init()
@@ -31,6 +31,8 @@ dark_overlay = pygame.Surface((WIDTH, HEIGHT))
 darkness = 200
 dark_overlay.set_alpha(darkness)  # Set transparency (0 = fully transparent, 255 = fully opaque)
 dark_overlay.fill((0, 0, 0))  # Fill with black color
+
+win = False
 
 timer: str = ''
 # Button class
@@ -94,7 +96,8 @@ def main_menu():
                 elif chose == 2:
                     win, timer = maze.play()
                     if win:
-                        win, timer = earthquake.play(timer)
+                        # win, timer = earthquake.play(timer)
+                        pass
             elif action == 2:
                 print("Options button clicked")
                 # Add your options logic here

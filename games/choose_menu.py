@@ -11,13 +11,15 @@ def activate(darkness_number):
     background = pygame.image.load("sprites/main/room/room1.png")
 
     animation = []
-    animation.append(background)
-    room2 = pygame.image.load("sprites/main/room/room2.png")
-    animation.append(room2)
-    room3 = pygame.image.load("sprites/main/room/room3.png")
-    animation.append(room3)
-    room4 = pygame.image.load("sprites/main/room/room4.png")
-    animation.append(room4)
+    for i in range(12):
+        room = pygame.image.load(f"sprites/main/room/room{i % 4 + 1}.png")
+        animation.append(room)
+
+    for i in range(9):
+        clock = pygame.image.load(f"sprites/clock/clock{i + 1}.png")
+        animation.append(clock)
+    clockch = pygame.image.load(f"sprites/clock/clock.ch.png")
+    animation.append(clockch)
 
     background_main = pygame.image.load("sprites/alien/square/сквер .png")
     choose_bus = pygame.image.load("sprites/choose_menu/choose_bus.png")
@@ -30,7 +32,7 @@ def activate(darkness_number):
     main_menu = pygame.transform.scale(main_menu, (150, 50))
     main_menu_rect = main_menu.get_rect(topleft = (50, 50))
     skip = pygame.image.load("sprites/main/skip.png")
-    skip_rect = main_menu.get_rect(topleft = (900, 600))
+    skip_rect = skip.get_rect(topleft = (900, 600))
 
     # Darken the background image
     dark_overlay = pygame.Surface((WIDTH, HEIGHT))
@@ -40,7 +42,7 @@ def activate(darkness_number):
 
     timer = 0
     TIMER = pygame.USEREVENT + 1
-    pygame.time.set_timer(TIMER, 1000)
+    pygame.time.set_timer(TIMER, 250)
     
     cutscene = True
     
@@ -57,15 +59,13 @@ def activate(darkness_number):
                     if skip_rect.collidepoint(pos):
                         cutscene = False
 
-            if timer != 10:
+            if timer < 22:
                 if darkness != 0:
                     darkness -= 1
                     dark_overlay.set_alpha(darkness)
-                screen.blit(animation[timer % 4], (0, 0))
+                screen.blit(animation[timer], (0, 0))
                 screen.blit(dark_overlay, (0, 0))
                 screen.blit(skip, (900, 600))
-            else:
-                cutscene = False
 
             # Draw the dark overlay on top
             something = 'This is cutscene'
