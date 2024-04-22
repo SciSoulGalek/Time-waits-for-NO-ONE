@@ -57,7 +57,7 @@ def play(timer):
         self.count=0
         self.direction=0
         for i in range(1,5):
-            imgr = pygame.image.load(f'png/{i}.png')
+            imgr = pygame.image.load(f'sprites/earthquake/{i}.png')
             imgr = pygame.transform.scale(imgr, (40, 80))
             imgl = pygame.transform.flip(imgr,True,False)
             self.images_r.append(imgr)
