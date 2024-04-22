@@ -25,7 +25,8 @@ def play():
             self.image = pygame.transform.scale(self.image, (20, 20))
             self.direction = 'right'
             self.counter = 3
-
+            self.add_time = False  # Variable to track whether to add or subtract time
+            self.sub_time = False  # Variable to track whether to add or subtract time
 
         def move(self, dx, dy):
             speed = 1
@@ -52,9 +53,14 @@ def play():
 
             for key in keys:
                 if self.rect.colliderect(key.rect):
+                    if key.key_type == 'greenapple':
+                        self.add_time = True  # Set add_time to True when picking up a green apple
+                    elif key.key_type == 'redapple':
+                        self.sub_time = True  # Set add_time to False when picking up a red apple
                     key.rect.x = 2000
                     key.rect.y = 2000
                     self.counter -= 1
+
                     
         def draw(self, surface):
             if self.direction == 'left':
@@ -200,10 +206,6 @@ def play():
                 running = False
             if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
                 running = False
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_KP_PLUS:
-                start_time += timedelta(minutes=1)
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_KP_MINUS:
-                start_time -= timedelta(minutes=1)
 
         # Update time
         current_time = datetime.now()
@@ -214,6 +216,13 @@ def play():
             add_minute = False  # Set the flag to False to indicate that the minute has been added
         elif elapsed_time.seconds % 10 != 0:
             add_minute = True  # Reset the flag if the condition is no longer true
+        # Adjust time based on key pickup
+        if player.add_time:
+            start_time += timedelta(minutes=1)  # Add a minute to the start time
+            player.add_time = False  # Reset add_time to False
+        elif player.sub_time:
+            start_time -= timedelta(minutes=1)  # Subtract a minute from the start time
+            player.sub_time = False  # Reset sub_time to False
 
         # Render time
         timer_text = start_time.strftime("%H:%M")
@@ -231,6 +240,16 @@ def play():
         if key[pygame.K_DOWN]:
             player.move(0, 2)
             player.direction = 'down'
+
+        for key in keys:
+            if player.rect.colliderect(key.rect):
+                if key.key_type == 'greenapple':
+                    player.add_time = True  # Set add_time to True when picking up a green apple
+                elif key.key_type == 'redapple':
+                    player.sub_time = False  # Set add_time to False when picking up a red apple
+                key.rect.x = 2000
+                key.rect.y = 2000
+                player.counter -= 1
 
         if player.rect.colliderect(escape.rect):
             return (True, (timer_text))
@@ -254,3 +273,4 @@ def play():
         clock.tick(100)
 
         pygame.display.update()
+    return False, None

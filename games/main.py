@@ -96,6 +96,7 @@ def main_menu():
                 elif chose == 2:
                     win, timer = maze.play()
                     if win:
+                        print(timer)
                         # win, timer = earthquake.play(timer)
                         pass
             elif action == 2:
