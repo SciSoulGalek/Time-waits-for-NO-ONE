@@ -8,7 +8,7 @@ def play(timer):
     screen_height = 700
 
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption('Platformer')
+    pygame.display.set_caption('Earthquake')
 
     # scrolling 
     scroll_th= 200

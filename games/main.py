@@ -1,5 +1,5 @@
 import pygame, sys
-import choose_menu, bus, maze, earthquake
+import choose_menu, bus, maze, last_earthquake_with_timer_changed_do_not_touch_please as earthquake
 
 #Initialize Pygame
 pygame.init()
@@ -94,7 +94,7 @@ def main_menu():
                 elif chose == 2:
                     win, timer = maze.play()
                     if win:
-                        earthquake.play(timer)
+                        win, timer = earthquake.play(timer)
             elif action == 2:
                 print("Options button clicked")
                 # Add your options logic here
