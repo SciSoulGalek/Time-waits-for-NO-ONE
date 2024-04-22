@@ -1,0 +1,212 @@
+ Game "Escape from the Maze"
+
+ Introduction
+This is a simple game where the player navigates through a maze to find the exit. The goal of the game is to reach the exit as quickly as possible.
+
+Controls
+Arrow Keys: Move the player character (left, right, up, down)
+
+ Game Elements
+Player: You control the player character, represented by a small sprite.
+Walls: Represented by solid blocks, these are obstacles that the player cannot pass through.
+Exit: Marked by a special tile, the goal is to reach this tile to win the game.
+Timer: Displays the elapsed time since the start of the game. Try to reach the exit in the shortest time possible.
+Gameplay
+- Use the arrow keys on the keyboard to move the player character through the maze.
+- Avoid collisions with walls, as colliding will stop your movement in that direction.
+- Collect red apples to increase time. Apples disappear after being collected.
+- Reach the exit tile to win the game.
+- The timer displays the elapsed time. Try to complete the maze in the least amount of time.
+ Game Logic
+- The player character moves one tile at a time in the pressed direction.
+- If the player collides with a wall, their movement in that direction will be blocked.
+- The player wins by reaching the exit tile.
+Notes
+- The layout of the maze is predefined and contains walls and an exit.
+- The player character starts from a specific starting position.
+- Walls block the player's movement.
+- The game ends when the player reaches the exit tile.
+- The timer displays the elapsed time in minutes and seconds.
+Developer
+- Author: Galymzhan Ryszhanov
+ Game "Bus Racer"
+
+Description
+"Bus Racer" is an arcade game where the player controls a bus, collects apples, and avoids obstacles. The goal of the game is to reach the destination point without incidents, encountering obstacles along the way.
+
+Controls
+- Up: Move upwards on the screen (up arrow).
+- Down: Move downwards on the screen (down arrow).
+- Left: Move left (left arrow).
+- Right: Move right (right arrow).
+
+Game Components
+
+Gameplay
+Speed: The bus speed increases as time passes.
+Apples: Collect red apples to increase your time. Avoid green apples to prevent time loss.
+
+Scoring
+Points: Earn 30 seconds for each collected red apple.
+Speed: Bus speed increases over time.
+
+Obstacles
+Enemies: Enemies appear on the road. Colliding with them ends the game.
+
+Graphics and Sound
+Background: Background image changes with movement to create a sense of motion.
+Music: Background music plays during the game.
+Sounds: Sounds include apple collection sound, collision sound, and game over sound.
+
+Interface
+Timer: Displays the game time in the format "minutes:seconds".
+
+Game Rules
+1. The player controls the bus, moving up, down, left, and right on the road.
+2. Enemies and apples appear on the road.
+3. Collect red apples to increase your time.
+4. Avoid collisions with enemies and green apples.
+5. The game ends if the player collides with an enemy or goes off the road.
+
+Game Files
+- `sprites/bus/racerbg.png`: Background image of the road.
+- `sprites/bus/bus.png`: Image of the bus.
+- `sprites/bus/Enemy.png`: Image of the enemy.
+- `sound/bus/background.wav`: Background music.
+- `sound/bus/catch.mp3`: Apple collection sound.
+- `sound/bus/crash.wav`: Collision sound.
+
+Running the Game
+1. Make sure you have Python and the Pygame library installed.
+2. Run the `main.py` file.
+3. The game will start with an animation and transition to the main gameplay.
+
+Game Over
+- The game ends upon collision with an enemy.
+- After successfully completing the game, the next scene appears.
+- After losing, the game over window appears.
+
+Developer
+- Author: Galymzhan Ryszhanov
+
+
+
+
+Game "Earthquake"
+
+Game Description:
+"Earthquake" is a 2D platformer where the player must overcome obstacles, collect red apples, and avoid green apples to reach the finish point.
+
+Controls:
+   - Spacebar: Jump
+   - ←: Move left
+   - →: Move right
+
+Goal of the Game:
+Reach the exit. If the player collects a green apple, their time decreases by 5 seconds, but if they collect a red apple, their time increases by 5 seconds. If the time runs out, the game ends. Upon reaching the exit, the player advances to the next level.
+
+Game World:
+Ground: Moving ground blocks to create a sense of motion.
+Road: The ground and path for the player.
+Red Apple: Collect these to increase time.
+Green Apple: Avoid these to prevent time loss.
+Lava: Represents danger, touching it results in losing the game.
+Exit: The goal of the game. When the player reaches this point, they win.
+
+Resources:
+Player: The character controlled by the player. Can jump and move left/right.
+Red Apples: Add time.
+Green Apple: Collision decreases time.
+Lava: Collision ends the game.
+
+Functions:
+- `play(timer)`: The main function to start the game. Takes time as an argument, counts down time, and controls the gameplay.
+- `Player()`: Class representing the player. Controls and movement animation.
+- `Enemy()`: Class representing the green apple. Their movement and behavior.
+- `Coin()`: Class for red coins. Their distribution throughout the level.
+- `World()`: Class creating the game world based on provided data.
+- `Lava()`: Class representing the lava. Its animation and behavior.
+- `Exit()`: Class representing the exit. When the player reaches it, the game ends.
+- `Button()`: Class for creating interactive buttons in the game.
+
+Gameplay:
+1. The player controls the character, moving around.
+2. Collects red apples to increase time.
+3. Avoids green apples and lava to avoid losing.
+4. Reaches the exit to win.
+
+Additional:
+- `bgsound`: Background music for the game.
+- `de`: Sound when colliding with a green apple.
+- `background_image`: Background image for the game window.
+- `win_screen`: Image for the victory screen.
+- `lose_screen`: Image for the defeat screen.
+
+Game End:
+- The game ends if:
+  - The player touches lava.
+  - The game time runs out.
+
+Developer:
+- Author: Ayaulyum Abdugkhapova (under the guidance of Galymzhan Ryszhanov)
+
+
+
+
+
+
+Game "Quiz with Alien"
+
+Description:
+"Quiz with Alien" is a game where the player answers questions by choosing the wrong answer from the options provided. For each correct answer, the player earns a point, which confuses the alien, while for a wrong answer, they earn nothing. The goal of the game is to outsmart the alien and answer all questions incorrectly within a limited amount of time.
+
+Controls:
+   - Answer Selection: Left-click on the button with the chosen answer option.
+
+Game Components
+
+Game Window
+- The graphical window of the game, displaying questions, answers, timer, current score, and background.
+
+Aliens
+- Animation of aliens that plays at the beginning of the game.
+
+Questions and Answers
+- The game features 5 randomly selected questions from the overall list of questions.
+- Each question has 4 answer options, one of which is correct.
+
+Timer
+- Each question has a timer that shows the remaining time to answer (10 seconds).
+- If time runs out, the question is considered skipped.
+
+Score
+- The player starts with a score of 0.
+- 1 point is added to the score for each correct answer.
+
+Game Rules
+1. The game starts with an animation of aliens. The player can skip the animation by clicking on the "Skip" button.
+2. After the animation, the first question and answer options are displayed.
+3. The player must choose one of the answer options by clicking on the corresponding button.
+4. If the answer is correct, the player earns 1 point.
+5. If the answer is wrong or time runs out, the player earns no points for that question.
+6. After answering one question, the next question is displayed.
+7. The game continues until all 5 questions are answered.
+
+File Descriptions
+- `main.py`: Main file with game logic and display.
+- `square_background.png`: Background image for the game window.
+- `alien1.png` to `alien20.png`: Animation of aliens.
+- `skip.png`: Image for the "Skip" button.
+
+Running the Game
+1. Make sure you have Python and the Pygame library installed.
+2. Run the `main.py` file.
+3. The game will start with an animation of aliens, then the first question will be displayed.
+
+Game End
+- The game ends after answering all 5 questions.
+- After the game ends, a win/lose window will appear.
+
+Developer
+- Author: Nazerkе Alpyssova (under the guidance of Galymzhan Ryszhanov)
+

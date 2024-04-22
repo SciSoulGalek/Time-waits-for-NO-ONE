@@ -26,3 +26,5 @@ Programmers(Ayaulym, Nazerke , Galymzhan)
 3. Moves of the character
 4. Setting a timer for the game 
 5. Bonus coins and tomatoes (any picture for now)
+
+Trello link: https://trello.com/b/tE2hzYCy/time-waits-for-no-one
