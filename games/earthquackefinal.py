@@ -18,10 +18,10 @@ def play(timer):
             st = pygame.image.load(f'sprites/earthquake/street{i%3 + 1}.png')
             animation.append(st)
     for i in range(1,13):
-        er = pygame.image.load(f'png/earthquake{i}.png')
+        er = pygame.image.load(f'sprites/earthquake/earthquake{i}.png')
         animation.append(er)
     # Load the "co" image
-    co = pygame.image.load('png/street.png')
+    co = pygame.image.load('sprites/earthquake/street.png')
 
 
     # Create a font object
@@ -90,7 +90,7 @@ def play(timer):
             self.count=0
             self.direction=0
             for i in range(1,4):
-                imgr = pygame.image.load(f'png/{i}.png')
+                imgr = pygame.image.load(f'sprites/earthquake/{i}.png')
                 imgr = pygame.transform.scale(imgr, (30, 60))
                 imgl = pygame.transform.flip(imgr,True,False)
                 self.images_r.append(imgr)
@@ -200,9 +200,9 @@ def play(timer):
             self.grass_tiles = []
 
             #load images
-            dirt_img = pygame.image.load('png/dirt.png')
-            grass_img = pygame.image.load('png/grass.png')
-            lava_img=pygame.image.load('png/lava.png')
+            dirt_img = pygame.image.load('sprites/earthquake/dirt.png')
+            grass_img = pygame.image.load('sprites/earthquake/grass.png')
+           
 
             row_count = 0
             for row in data:
@@ -281,7 +281,7 @@ def play(timer):
             self.animation_time = 500  # Time between each frame change (in milliseconds)
             self.last_update = pygame.time.get_ticks()  # Last time the frame was changed
             for i in range(1, 3):  # Assuming you have two lava images named lava1.png and lava2.png
-                img = pygame.image.load(f'png/lava{i}.png')
+                img = pygame.image.load(f'sprites/earthquake/lava{i}.png')
                 self.images.append(pygame.transform.scale(img, (tile_size, tile_size)))
             self.image = self.images[self.index]  # Set initial image
             self.rect = self.image.get_rect()
@@ -302,7 +302,7 @@ def play(timer):
     class Coin(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            img = pygame.image.load('png/redapple.png')
+            img = pygame.image.load('sprites/earthquake/redapple.png')
             self.image = pygame.transform.scale(img, (tile_size // 2, tile_size // 2))
             self.rect = self.image.get_rect()
             # Adjust position based on scrolling offset
@@ -312,7 +312,7 @@ def play(timer):
     class Enemy(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            img = pygame.image.load('png/greenapple.png')
+            img = pygame.image.load('sprites/earthquake/greenapple.png')
             self.image = pygame.transform.scale(img, (tile_size // 2, tile_size // 2))
             self.rect = self.image.get_rect()
             # Adjust position based on scrolling offset
@@ -321,7 +321,7 @@ def play(timer):
     class Exit(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            img = pygame.image.load('png/door.png')
+            img = pygame.image.load('sprites/earthquake/door.png')
             self.image = pygame.transform.scale(img, (tile_size, int(tile_size * 1.5)))
             self.rect = self.image.get_rect()
             self.rect.x = x
@@ -361,24 +361,24 @@ def play(timer):
     clock = pygame.time.Clock()  # Create a clock object to control frame rate
 
     run = True
-    lose_screem2=pygame.image.load("png/burnedch.png")
-    lose_screem1=pygame.image.load("png/burned .png")
-    lose_screem3=pygame.image.load("png/yourelateloss.png")
+    lose_screem2=pygame.image.load("sprites/earthquake/burnedch.png")
+    lose_screem1=pygame.image.load("sprites/earthquake/burned .png")
+    lose_screem3=pygame.image.load("sprites/earthquake/yourelateloss.png")
 
 
-    win_screem=pygame.image.load("png/sky.png")
-    background_image=pygame.image.load("png/hell-2.jpg").convert()
+   
+    background_image=pygame.image.load("sprites/earthquake/lavabg.jpg").convert()
 
     start_time = pygame.time.get_ticks()  # Get the current time in milliseconds
     game_time = 120  # 2 minutes in seconds
     font = pygame.font.SysFont(None, 36)  # Define font for the timer
 
     #buttoms 
-    exit_img=pygame.image.load("png/door.png")
+    exit_img=pygame.image.load("sprites/earthquake/door.png")
     exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
 
     #skip and dark 
-    skip = pygame.image.load("png/skip.png")
+    skip = pygame.image.load("sprites/earthquake/skip.png")
     skip_rect =skip.get_rect(topleft = (900, 600))
 
 
