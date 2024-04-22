@@ -1,6 +1,9 @@
 import pygame
 from pygame.locals import *
 from datetime import datetime
+import pygame
+from pygame.locals import *
+from datetime import datetime
 def play(timer):  
     pygame.init()
 
@@ -9,18 +12,51 @@ def play(timer):
     display = pygame.Surface((300,200))
 
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption('Earthquake')
+    pygame.display.set_caption('Platformer')
+
+
+    animation = []
+
+    for i in range(1,10):
+            st = pygame.image.load(f'png/street{i%3 + 1}.png')
+            animation.append(st)
+    for i in range(1,13):
+        er = pygame.image.load(f'png/earthquake{i}.png')
+        animation.append(er)
+    # Load the "co" image
+    co = pygame.image.load('png/street.png')
+
+
+    # Create a font object
+    font = pygame.font.Font("fonts/Superfont.ttf", 22)  # Adjust the font and size as needed
+
+    # Render the text onto a surface
+    text_surface = font.render("Shaking. Gap. Darkness. Lucy falls into the pit.", True, (255, 255, 255))  # Adjust text and color as needed
+
+    # Blit the text surface onto your image at the desired position
+    text_position = (175, 575)  # Adjust the position as needed
+    co.blit(text_surface, text_position)
+
+    # Display the image
+    screen = pygame.display.set_mode(co.get_size())
+    screen.blit(co, (0, 0))
+    pygame.display.flip()
+    animation.append(co)
+
+
+
 
     # scrolling 
     scroll_th= 200
     scroll=[0,0]
-
     #define game variables
     tile_size = 55
     game_over=0
-    bgsound = pygame.mixer.Sound("sound/earthquake/bc.mp3")
-    bgsound.play()
-    de=pygame.mixer.Sound("sound/earthquake/de.mp3")
+
+    #sound
+    bgsound = pygame.mixer.Sound("sound/bc.mp3")
+    de=pygame.mixer.Sound("sound/de.mp3")
+    earthqu=pygame.mixer.Sound("sound/quake.mp3")
     class Button():
         def __init__(self, x, y, image):
             self.image = image
@@ -56,9 +92,9 @@ def play(timer):
             self.index=0
             self.count=0
             self.direction=0
-            for i in range(1,5):
-                imgr = pygame.image.load(f'sprites/earthquake/{i}.png')
-                imgr = pygame.transform.scale(imgr, (40, 80))
+            for i in range(1,4):
+                imgr = pygame.image.load(f'png/{i}.png')
+                imgr = pygame.transform.scale(imgr, (30, 60))
                 imgl = pygame.transform.flip(imgr,True,False)
                 self.images_r.append(imgr)
                 self.images_l.append(imgl)
@@ -86,7 +122,7 @@ def play(timer):
             if game_over == 0:
                 key = pygame.key.get_pressed()
                 if key[pygame.K_SPACE] and not self.jumped and not self.in_air:
-                    self.vel_y = -17
+                    self.vel_y = -15
                     self.jumped = True
                 if not key[pygame.K_SPACE]:
                     self.jumped = False
@@ -161,18 +197,16 @@ def play(timer):
             
             return game_over
 
-
-        
     class World():
         def __init__(self, data):
             self.tile_list = []
             self.grass_tiles = []
-    
+
             #load images
-            dirt_img = pygame.image.load('sprites/earthquake/dirt.png')
-            grass_img = pygame.image.load('sprites/earthquake/grass.png')
-            lava_img=pygame.image.load('sprites/earthquake/lava1.png')
-    
+            dirt_img = pygame.image.load('png/dirt.png')
+            grass_img = pygame.image.load('png/grass.png')
+            lava_img=pygame.image.load('png/lava.png')
+
             row_count = 0
             for row in data:
                 col_count = 0
@@ -218,7 +252,7 @@ def play(timer):
                     if tile==3:
                         lave=lava(col_count*(tile_size-scroll[0]),row_count*(tile_size-scroll[1]) )
                         lava_group.add(lave)
-                       
+                    
                     
                     col_count += 1
                 row_count += 1
@@ -229,20 +263,19 @@ def play(timer):
                 if direction == 1:  # Move right
                     grass_rect.x += 1  # Change the value to adjust the speed of movement
                     # Check if the grass tile is about to go out of bounds
-                    if grass_rect.right > screen_width:
+                    if grass_rect.right > 1500:
                         grass[1] = -1  # Change direction to left
                 else:  # Move left
                     grass_rect.x -= 1  # Change the value to adjust the speed of movement
                     # Check if the grass tile is about to go out of bounds
-                    if grass_rect.left < 0:
+                    if grass_rect.left < 200:
                         grass[1] = 1  # Change direction to right
-    
+
         def draw(self):
             for tile in self.tile_list:
                 adjusted_rect = tile[1].move(-scroll[0], -scroll[1])
                 screen.blit(tile[0], adjusted_rect)
                 
-
     class lava(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
@@ -251,13 +284,13 @@ def play(timer):
             self.animation_time = 500  # Time between each frame change (in milliseconds)
             self.last_update = pygame.time.get_ticks()  # Last time the frame was changed
             for i in range(1, 3):  # Assuming you have two lava images named lava1.png and lava2.png
-                img = pygame.image.load(f'sprites/earthquake/lava{i}.png')
+                img = pygame.image.load(f'png/lava{i}.png')
                 self.images.append(pygame.transform.scale(img, (tile_size, tile_size)))
             self.image = self.images[self.index]  # Set initial image
             self.rect = self.image.get_rect()
             self.rect.x = x
             self.rect.y = y
-    
+
         def update(self):
             # Check if it's time to change the frame
             if pygame.time.get_ticks() - self.last_update > self.animation_time:
@@ -266,51 +299,54 @@ def play(timer):
                 if self.index >= len(self.images):  # If reached the end of the animation, start over
                     self.index = 0
                 self.image = self.images[self.index]  # Update the current image
-    
-            # You can add any other update logic here, such as movement or collision detection
-    
 
-    
+            # You can add any other update logic here, such as movement or collision detection
+
     class Coin(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            self.image = pygame.image.load('sprites/earthquake/png/greenapple.png')
-            self.image = pygame.transform.scale(self.image, (tile_size // 2, tile_size // 2))
+            img = pygame.image.load('png/redapple.png')
+            self.image = pygame.transform.scale(img, (tile_size // 2, tile_size // 2))
             self.rect = self.image.get_rect()
-            self.rect.center = (x, y)
+            # Adjust position based on scrolling offset
             self.rect.x = x - scroll[0]
             self.rect.y = y - scroll[1]
+
     class Enemy(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            img = pygame.image.load('sprites/earthquake/redapple.png')
+            img = pygame.image.load('png/greenapple.png')
             self.image = pygame.transform.scale(img, (tile_size // 2, tile_size // 2))
             self.rect = self.image.get_rect()
             # Adjust position based on scrolling offset
             self.rect.x = x - scroll[0]
             self.rect.y = y - scroll[1]
     class Exit(pygame.sprite.Sprite):
-    	def __init__(self, x, y):
+        def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            img = pygame.image.load('sprites/earthquake/door.png')
+            img = pygame.image.load('png/door.png')
             self.image = pygame.transform.scale(img, (tile_size, int(tile_size * 1.5)))
             self.rect = self.image.get_rect()
             self.rect.x = x
             self.rect.y = y
+
+
+
+
     world_data = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0],
-        [4, 4, 4, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 4, 4, 0 ,0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 4, 4, 0, 0, 0, 0, 0, 0 ,0, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-        [0, 7, 7, 0, 0, 0, 7, 8, 0 ,4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 8, 7, 8, 0, 0, 0, 0, 0, 0, 0],
-        [0, 4, 4, 0, 0, 0, 4, 4, 4 ,0, 8, 8, 0, 4, 4, 0, 0, 0, 0, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 8, 8, 0, 0 ,0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 4, 4, 0, 0 ,0, 0, 4, 4, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 12,12 ,12, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-        [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ,3 ,3 ], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 7, 7, 0 ,0, 0, 0, 0, 0, 0],
+        [4, 4, 4, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 8, 8, 4, 4, 4, 0 ,0, 0, 9, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 0, 4, 4, 0, 8, 8, 0, 0, 0, 0,0, 0, 0, 2, 2, 0, 0, 0, 0 ,4, 4, 1, 4, 0, 0],
+        [0, 0, 0, 0, 0, 0, 4, 4, 0 ,0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0,0, 8, 8, 7, 0, 0, 0, 0, 0 ,8, 0, 0, 0, 0, 4],
+        [0, 0, 0, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 2, 2, 0, 0,0, 4, 4, 4, 0, 0, 0, 4, 4 ,4, 0, 0, 0, 4, 0],
+        [0, 4, 4, 0, 0, 0, 0, 0, 0 ,0, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 1, 1, 0, 0, 0, 0, 4, 0,4, 0, 4, 4, 4, 4, 0, 0, 2 ,0, 4, 4, 4, 0, 0],
+        [0, 7, 7, 0, 0, 0, 7, 8, 4 ,4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 8, 7, 8, 0, 0, 0, 7, 7, 7, 4,0, 8, 7, 7, 0, 0, 0, 0, 2 ,2, 0, 0, 0, 0, 0],
+        [0, 4, 4, 0, 0, 0, 4, 4, 0 ,0, 8, 8, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 8, 8, 0, 4, 4, 4, 0, 0, 4, 4, 4, 0, 0, 7, 0, 0 ,0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 8, 8, 0, 0 ,0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 4, 4, 0, 0, 0, 0, 2,2, 0, 0, 0, 0, 0, 0, 4, 0 ,8, 0, 7, 0, 0, 0],
+        [0, 0, 0, 0, 0, 4, 4, 0, 0 ,0, 0, 4, 4, 0, 0, 0, 0, 0, 4, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 4, 4, 4, 0, 0, 0 ,4, 0, 4, 0, 0, 0],
+        [0, 12,12 ,12, 0, 0, 0, 4, 0 ,4, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0 ,2, 2, 2, 0, 0, 0], 
+        [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ,3 ,3 , 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,3] 
         
         
     ]
@@ -321,90 +357,169 @@ def play(timer):
     enemy_group = pygame.sprite.Group()
     exit_group = pygame.sprite.Group()
     world = World(world_data)
-    
+
 
 
     fps=30
     clock = pygame.time.Clock()  # Create a clock object to control frame rate
 
     run = True
-    lose_screem=pygame.image.load("sprites/earthquake/png/d-2.jpg")
-    win_screem=pygame.image.load("sprites/earthquake/sky.png")
-    background_image=pygame.image.load("sprites/earthquake/png/hell-2.jpg")
+    lose_screem2=pygame.image.load("png/burnedch.png")
+    lose_screem1=pygame.image.load("png/burned .png")
+    lose_screem3=pygame.image.load("png/yourelateloss.png")
 
-    start_time = datetime.now()  # Get the current time in milliseconds
+
+    win_screem=pygame.image.load("png/sky.png")
+    background_image=pygame.image.load("png/hell-2.jpg").convert()
+
+    start_time = pygame.time.get_ticks()  # Get the current time in milliseconds
     game_time = 120  # 2 minutes in seconds
     font = pygame.font.SysFont(None, 36)  # Define font for the timer
+
     #buttoms 
-    exit_img=pygame.image.load("sprites/earthquake/door.png")
+    exit_img=pygame.image.load("png/door.png")
     exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
+
+    #skip and dark 
+    skip = pygame.image.load("png/skip.png")
+    skip_rect =skip.get_rect(topleft = (900, 600))
+
+
+
+
+
+    # Add these variables before the game loop
     bg_x = 0
     bg_y = 0
 
+    #curscenetime
+    timer = 0
+    TIMER = pygame.USEREVENT + 1
+    pygame.time.set_timer(TIMER, 350)
+    #curscene
+    cutscene = True
+    eart_sound_played = False
 
+    # Inside the game loop
+    # Inside the game loop
+    # Inside the game loop
     while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                bgsound.stop()
-                run = False
+        if cutscene:
+            for event in pygame.event.get():  
+                if event.type == TIMER:
+                    timer += 1
+                if event.type == pygame.QUIT:
+                    pass
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
 
-        screen.blit(background_image, (0, 0))  # Clear the screen
+                        # Check if the mouse click is within the back button
+                    if skip_rect.collidepoint(pos):
+                        bgsound.play(-1)
+                        earthqu.stop()
+                        cutscene = False
+            if not eart_sound_played:
+                earthqu.play()  # Play the eart sound
+                eart_sound_played = True 
+            if timer < 22:
+                screen.blit(animation[timer], (0, 0))   
+                screen.blit(skip, (900, 600))
+                
 
-        game_over = player.update(game_over)
-
-        # Update scrolling
-        scroll[0] += (player.rect.x - scroll[0] - 152) / 20
-    
-        # Update world
-        world.update()  # Update the positions of the moving grass tiles
-        world.draw()
-    
-        # Update and draw lava
-        lava_group.update()
-        lava_group.draw(screen)
-
-        # Calculate elapsed time
-        elapsed_time = datetime.now() - start_time
-        # Convert elapsed time to a string
-        timer_text = str(elapsed_time)
-        # Extract minutes and seconds
-        # collision with coin 
-        coin_collisions = pygame.sprite.spritecollide(player, coin_group, True)
-        enemy_collisions = pygame.sprite.spritecollide(player, enemy_group, True)
-        door_collision = pygame.sprite.spritecollide(player, exit_group, False)
+                
         
-        for coin in coin_collisions:
-            seconds += 5  # Add 5 seconds to the remaining time
-
-        for e in enemy_collisions:
-            seconds -= 5 
-            
-        minutes = (elapsed_time.seconds + timer[0]) // 60 
-        seconds = (elapsed_time.seconds + timer[1]) % 60 
-
-
-        if door_collision:
-            game_over = 1  # Set game_over to a value indicating victory
-            bgsound.stop()
-            
-
-        # Format the time as "MM:SS"
-        time_text = "{:02}:{:02}".format(minutes, seconds)
-
-        timer_surface = font.render(time_text, True, (255, 255, 255))
-        if game_over==-1:
-            screen.blit(lose_screem,(0,0))
-        elif game_over == 1:  # Victory condition
-            screen.blit(win_screem, (0, 0))  # Display the win screen
+        
+            screen.blit(skip, (900, 600))
+            pygame.display.update()
         else:
-            for coin in coin_group:
-                screen.blit(coin.image, (coin.rect.x - scroll[0], coin.rect.y - scroll[1]))
-            for e in enemy_group:
-                screen.blit(e.image, (e.rect.x - scroll[0], e.rect.y - scroll[1]))
-            screen.blit(timer_surface, (1030, 10))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+
+            # Clear the screen
+            screen.blit(background_image, (0, 0))
+            
+            # Update player
+            game_over = player.update(game_over)
+
+            # Update scrolling
+            scroll[0] += (player.rect.x - scroll[0] - 152) / 20
+
+            # Update world
+            world.update()  # Update the positions of the moving grass tiles
+            world.draw()
+
+            # Update and draw lava
+            lava_group.update()
+            lava_group.draw(screen)
+
+        
+            for door in exit_group:
+                screen.blit(door.image, (door.rect.x - scroll[0], door.rect.y - scroll[1]))
+            # Check for collisions
+            coin_collisions = pygame.sprite.spritecollide(player, coin_group, True)
+            enemy_collisions = pygame.sprite.spritecollide(player, enemy_group, True)
+            #Time 
+            elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # Convert to seconds
+            remaining_time = max(game_time - elapsed_time, 0)  # Calculate remaining time
+            # Convert remaining time to minutes and seconds
+            minutes = remaining_time // 60
+            seconds = remaining_time % 60
+
+        
+            
+            # Format the time as "MM:SS"
+            time_text = "{:02d}:{:02d}".format(minutes, seconds)
+
+            timer_text = font.render(f"Time Left: {time_text}", True, (255, 255, 255))
+        
+
+            # Handle collisions with the door
+            door_collision = pygame.sprite.spritecollide(player, exit_group, False)
+            if door_collision:
+                game_over = 1  # Set game_over to a value indicating victory
+                bgsound.stop()
+            
+
+            # Handle collisions with coins and enemies
+            for coin in coin_collisions:
+                remaining_time += 5  # Add 5 seconds to the remaining time
+
+            for e in enemy_collisions:
+                remaining_time -= 5  # Subtract 5 seconds from the remaining time
+
+            # Draw the door sprites
+
+            # Handle collisions with the door
+
+            game_over = player.update(game_over)
+
+            # Update and draw coins and enemies
+            if game_over == -1:
+                screen.blit(lose_screem1, (0, 0))
+                screen.blit(lose_screem2, (0, 200))
+                screen.blit(lose_screem3 , (380,150))
+
+                
+            elif game_over == 1:  # Victory condition
+                pass  # Display the win screen
+            else:
+                for coin in coin_group:
+                    screen.blit(coin.image, (coin.rect.x - scroll[0], coin.rect.y - scroll[1]))
+                for e in enemy_group:
+                    screen.blit(e.image, (e.rect.x - scroll[0], e.rect.y - scroll[1]))
+                screen.blit(timer_text, (20, 20))
+
+            # End game if time runs out
+            
+                
+                
 
 
-        pygame.display.update()
-    
-        clock.tick(fps)  # Limit frame rate to 30 frames per second
+            pygame.display.update()
+            clock.tick(fps)  # Limit frame rate to 30 frames per second
+
+    pygame.quit()
+
+
 play((0, 0))
