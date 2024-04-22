@@ -240,12 +240,12 @@ def play(timer_text):
             score_y = 20
             window.blit(score_surface, (score_x, score_y))
             if score==5:
-                screen.blit(lose_screem1, (0, 0))
-                screen.blit(lose_screem2, (0, 200))
-                screen.blit(lose_screem3 , (380,150))
+                window.blit(lose_screem1, (0, 0))
+                window.blit(lose_screem2, (0, 200))
+                window.blit(lose_screem3 , (380,150))
             else:
-                screen.blit(win_screem1, (0, 0))
-                screen.blit(win_screem2, (0, 200))
+                window.blit(win_screem1, (0, 0))
+                window.blit(win_screem2, (0, 200))
                 
         
                 
