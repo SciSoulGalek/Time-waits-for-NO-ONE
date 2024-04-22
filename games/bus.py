@@ -40,9 +40,9 @@ def play():
     pygame.mixer.music.play(-1)
     
     #Background 
-    background = pygame.image.load("sprites/bus/AnimatedStreet.png")
-    background = pygame.transform.scale(background, (700, 1100))
-    background = pygame.transform.rotate(background, 90)
+    background = pygame.image.load("sprites/bus/racerbg.png")
+    background = pygame.transform.scale(background, (1100, 700))
+    # background = pygame.transform.rotate(background, 90)
     background_x = 0 
     
     #Create a white screen 

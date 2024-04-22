@@ -283,8 +283,8 @@ def play(timer):
         # Convert elapsed time to a string
         timer_text = str(elapsed_time)
         # Extract minutes and seconds
-        minutes = elapsed_time.seconds // 60 + timer[0]
-        seconds = elapsed_time.seconds % 60 + timer[1]
+        minutes = (elapsed_time.seconds + timer[0]) // 60 
+        seconds = (elapsed_time.seconds + timer[1]) % 60 
 
         # collision with coin 
         coin_collisions = pygame.sprite.spritecollide(player, coin_group, True)

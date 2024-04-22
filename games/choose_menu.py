@@ -19,6 +19,7 @@ def activate(darkness_number):
     room4 = pygame.image.load("sprites/main/room/room4.png")
     animation.append(room4)
 
+    background_main = pygame.image.load("sprites/alien/square/сквер .png")
     choose_bus = pygame.image.load("sprites/choose_menu/choose_bus.png")
     choose_bus = pygame.transform.scale(choose_bus, (300, 300))
     choose_bus_rect = choose_bus.get_rect(topleft = (150, 200))
@@ -93,7 +94,7 @@ def activate(darkness_number):
                         return 2
 
             # Draw the game selection screen
-            screen.fill((255, 255, 255))
+            screen.blit(background_main, (0, 0))
             screen.blit(main_menu, (50, 50))
             screen.blit(choose_bus, (150, 200))
             screen.blit(choose_car, (650, 200))
