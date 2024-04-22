@@ -25,7 +25,7 @@ def play(timer):
 
 
     # Create a font object
-    font = pygame.font.Font("fonts/Superfont.ttf", 22)  # Adjust the font and size as needed
+    font = pygame.font.Font("fonts/superfont.ttf", 22)  # Adjust the font and size as needed
 
     # Render the text onto a surface
     text_surface = font.render("Shaking. Gap. Darkness. Lucy falls into the pit.", True, (255, 255, 255))  # Adjust text and color as needed
