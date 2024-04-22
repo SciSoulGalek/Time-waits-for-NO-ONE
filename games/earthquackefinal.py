@@ -1,9 +1,6 @@
 import pygame
 from pygame.locals import *
 from datetime import datetime
-import pygame
-from pygame.locals import *
-from datetime import datetime
 def play(timer):  
     pygame.init()
 
@@ -12,13 +9,13 @@ def play(timer):
     display = pygame.Surface((300,200))
 
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption('Platformer')
+    pygame.display.set_caption('Time-waits-for-no-one')
 
 
     animation = []
 
     for i in range(1,10):
-            st = pygame.image.load(f'png/street{i%3 + 1}.png')
+            st = pygame.image.load(f'sprites/earthquake/street{i%3 + 1}.png')
             animation.append(st)
     for i in range(1,13):
         er = pygame.image.load(f'png/earthquake{i}.png')
