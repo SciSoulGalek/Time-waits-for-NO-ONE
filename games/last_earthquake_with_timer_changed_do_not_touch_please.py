@@ -22,59 +22,59 @@ def play(timer):
     bgsound.play()
     de=pygame.mixer.Sound("sound/earthquake/de.mp3")
     class Button():
-	def __init__(self, x, y, image):
-		self.image = image
-		self.rect = self.image.get_rect()
-		self.rect.x = x
-		self.rect.y = y
-		self.clicked = False
+        def __init__(self, x, y, image):
+            self.image = image
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+            self.clicked = False
 
-	def draw(self):
-		action = False
+        def draw(self):
+            action = False
 
-		#get mouse position
-		pos = pygame.mouse.get_pos()
+            #get mouse position
+            pos = pygame.mouse.get_pos()
 
-		#check mouseover and clicked conditions
-		if self.rect.collidepoint(pos):
-			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
-				action = True
-				self.clicked = True
+            #check mouseover and clicked conditions
+            if self.rect.collidepoint(pos):
+                if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                    action = True
+                    self.clicked = True
 
-		if pygame.mouse.get_pressed()[0] == 0:
-			self.clicked = False
+            if pygame.mouse.get_pressed()[0] == 0:
+                self.clicked = False
 
 
-		#draw button
-		screen.blit(self.image, self.rect)
+            #draw button
+            screen.blit(self.image, self.rect)
 
-		return action
+            return action
     class Player():
-    def __init__(self, x, y):
-        self.images_r=[]
-        self.images_l=[]
-        self.index=0
-        self.count=0
-        self.direction=0
-        for i in range(1,5):
-            imgr = pygame.image.load(f'sprites/earthquake/{i}.png')
-            imgr = pygame.transform.scale(imgr, (40, 80))
-            imgl = pygame.transform.flip(imgr,True,False)
-            self.images_r.append(imgr)
-            self.images_l.append(imgl)
-
-        self.image=self.images_r[self.index]
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-
-
-        self.vel_x = 0  # Initialize horizontal velocity
-        self.vel_y = 0
-        self.jumped = False
-        self.in_air = True
+        def __init__(self, x, y):
+            self.images_r=[]
+            self.images_l=[]
+            self.index=0
+            self.count=0
+            self.direction=0
+            for i in range(1,5):
+                imgr = pygame.image.load(f'sprites/earthquake/{i}.png')
+                imgr = pygame.transform.scale(imgr, (40, 80))
+                imgl = pygame.transform.flip(imgr,True,False)
+                self.images_r.append(imgr)
+                self.images_l.append(imgl)
+    
+            self.image=self.images_r[self.index]
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+            self.width = self.image.get_width()
+            self.height = self.image.get_height()
+    
+    
+            self.vel_x = 0  # Initialize horizontal velocity
+            self.vel_y = 0
+            self.jumped = False
+            self.in_air = True
 
        
     def update(self, game_over):
@@ -290,14 +290,14 @@ def play(timer):
             self.rect.x = x - scroll[0]
             self.rect.y = y - scroll[1]
     class Exit(pygame.sprite.Sprite):
-    	def __init__(self, x, y):
-    		pygame.sprite.Sprite.__init__(self)
-    		img = pygame.image.load('png/door.png')
-    		self.image = pygame.transform.scale(img, (tile_size, int(tile_size * 1.5)))
-    		self.rect = self.image.get_rect()
-    		self.rect.x = x
-    		self.rect.y = y
-     world_data = [
+        def __init__(self, x, y):
+            pygame.sprite.Sprite.__init__(self)
+            img = pygame.image.load('png/door.png')
+            self.image = pygame.transform.scale(img, (tile_size, int(tile_size * 1.5)))
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+    world_data = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0],
         [4, 4, 4, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
