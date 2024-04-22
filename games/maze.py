@@ -252,7 +252,7 @@ def play():
                 player.counter -= 1
 
         if player.rect.colliderect(escape.rect):
-            return (True, (timer_text))
+            return (True, timer_text)
         screen.fill(DARK_GRAY)
         for wall in walls:
             pygame.draw.rect(screen, (DARK_GRAY), wall.rect)
@@ -273,4 +273,4 @@ def play():
         clock.tick(100)
 
         pygame.display.update()
-    return False, None
+    return (False, timer_text)

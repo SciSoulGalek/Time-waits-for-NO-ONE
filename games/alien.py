@@ -1,6 +1,7 @@
-def play(timer):
+def play(timer_text):
     import pygame
     import random
+    from datetime import datetime
     
     # Initialize Pygame
     pygame.init()
@@ -138,11 +139,9 @@ def play(timer):
                     if skip_rect.collidepoint(pos):
                         cutscene = False
 
-            if timer != 20:
+            if timer < 20:
                 window.blit(animation[timer % 20], (0, 0))
                 window.blit(skip, (900, 600))
-            else:
-                cutscene = False
 
             # Draw the dark overlay on top
             something = 'This is cutscene'
@@ -155,7 +154,7 @@ def play(timer):
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    return
                 elif event.type == pygame.KEYDOWN:
                     # Toggle full window with F11
                     if event.key == pygame.K_F11:
@@ -182,13 +181,13 @@ def play(timer):
                             # Move to the next question if there is one
                             if current_question_index < NUM_QUESTIONS - 1:
                                 current_question_index += 1
-                                start_time = pygame.time.get_ticks() // 1000  # Reset the timer
+                                start_time = datetime.now # Reset the timer
                                 create_buttons((WIDTH - RECT_WIDTH) // 2 + 120, (HEIGHT - RECT_HEIGHT) // 2 - 60)
                             else:
                                 running = False  # End the game if there are no more questions
 
             # Calculate elapsed time and remaining time
-            current_time = pygame.time.get_ticks() // 1000
+            current_time = datetime.now
             elapsed_time = current_time - start_time
             remaining_time = max(0, QUESTION_DURATION - elapsed_time)
 
@@ -243,10 +242,9 @@ def play(timer):
                     start_time = current_time  # Reset the timer
                     create_buttons((WIDTH - RECT_WIDTH) // 2 + 120, (HEIGHT - RECT_HEIGHT) // 2 - 60)
                 else:
-                    running = False  # End the game if there are no more questions
+                    return (True, timer_text)  # End the game if there are no more questions
 
             # Update the display
             pygame.display.flip()
 
-    return
-play((0, 0))
+    return (False, timer_text)

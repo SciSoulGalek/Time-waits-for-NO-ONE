@@ -21,7 +21,7 @@ def activate(darkness_number):
     clockch = pygame.image.load(f"sprites/clock/clock.ch.png")
     animation.append(clockch)
 
-    background_main = pygame.image.load("sprites/alien/square/сквер .png")
+    background_main = pygame.image.load("sprites/choose_menu/choose_menu.png")
     choose_bus = pygame.image.load("sprites/choose_menu/choose_bus.png")
     choose_bus = pygame.transform.scale(choose_bus, (300, 300))
     choose_bus_rect = choose_bus.get_rect(topleft = (150, 200))

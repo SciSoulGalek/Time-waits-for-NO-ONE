@@ -164,11 +164,6 @@ def play():
     fuel_bar_pos = (10, SCREEN_HEIGHT - 30)
     fuel_decrease_rate = 0.1  # Rate at which fuel decreases per frame
     
-    #Get the highscore to display
-    f = open('highscore.txt', 'r')
-    HS = f.readline()
-    HS = int(HS)
-    
     #Start time
     start_time = datetime.now()
 
@@ -216,11 +211,8 @@ def play():
         FUEL -= fuel_decrease_rate
 
         #Display score, highscore and coins
-        highscore = font_small.render(f'Highscore:{HS}', True, BLACK)
+
         scores = font_small.render(str(SCORE), True, BLACK)
-        if HS <= SCORE:
-            HS = SCORE
-        DISPLAYSURF.blit(highscore, (10,10))
         DISPLAYSURF.blit(scores, (10,30))
         coins = font_small.render(str(COINS), True, BLACK)
         DISPLAYSURF.blit(coins, (360,10))
@@ -266,10 +258,7 @@ def play():
         if pygame.sprite.spritecollideany(P1, enemies) or FUEL < 0:
             pygame.mixer.music.stop()
             pygame.mixer.Sound('sound/bus/crash.wav').play()
-            time.sleep(1)
-            #Save the highscore
-            f = open('highscore.txt', 'w')
-            f.write(str(HS))   
+            time.sleep(1) 
 
             DISPLAYSURF.fill(RED)
             DISPLAYSURF.blit(game_over, (30,250))

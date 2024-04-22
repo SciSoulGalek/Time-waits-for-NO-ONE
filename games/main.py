@@ -1,5 +1,5 @@
 import pygame, sys
-import choose_menu, bus, maze
+import choose_menu, bus, maze, earthquake, alien
 
 #Initialize Pygame
 pygame.init()
@@ -8,6 +8,10 @@ pygame.init()
 WIDTH, HEIGHT = 1100, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Time waits for NO ONE")
+# Load icon image
+icon_sprite = pygame.image.load("sprites/main/mainlogo.png")
+icon_sprite = pygame.transform.scale(icon_sprite, (400, 400))
+pygame.display.set_icon(icon_sprite)
 
 # Colors
 WHITE = (255, 255, 255)
@@ -25,6 +29,8 @@ options_sprite = pygame.image.load("sprites/main/options.png")
 options_sprite = pygame.transform.scale(options_sprite, button_size)
 quit_sprite = pygame.image.load("sprites/main/quit.png")
 quit_sprite = pygame.transform.scale(quit_sprite, button_size)
+logo_sprite = pygame.image.load("sprites/main/mainlogo.png")
+logo_sprite = pygame.transform.scale(logo_sprite, (450, 450))
 
 # Darken the background image
 dark_overlay = pygame.Surface((WIDTH, HEIGHT))
@@ -32,9 +38,11 @@ darkness = 200
 dark_overlay.set_alpha(darkness)  # Set transparency (0 = fully transparent, 255 = fully opaque)
 dark_overlay.fill((0, 0, 0))  # Fill with black color
 
-win = False
+win1 = False
+win2 = False
+win3 = False
 
-timer: str = ''
+timer_text: str = ''
 # Button class
 class Button:
     def __init__(self, source, x, y, action):
@@ -84,6 +92,7 @@ def main_menu():
             # Draw the dark overlay on top
             screen.blit(dark_overlay, (0, 0))
             menu.draw(screen)
+            screen.blit(logo_sprite, (WIDTH // 2 - 225, -25))
             pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -92,13 +101,23 @@ def main_menu():
             if action == 1:
                 chose = choose_menu.activate(darkness)
                 if chose == 1:
-                    bus.play()
+                    win1, timer_text = bus.play()
                 elif chose == 2:
-                    win, timer = maze.play()
-                    if win:
-                        print(timer)
-                        # win, timer = earthquake.play(timer)
-                        pass
+                    win1, timer_text = maze.play()
+
+                if win1:
+                    win2, timer_text = earthquake.play(timer_text)
+                    if win2:
+                        win3, timer_text = alien.play(timer_text)
+                        if win3:
+                            print('you win') #win screen
+                        else:
+                            print('you lose') #back in time
+                    else:
+                        print('you lose') #back in time
+                else:
+                    print('you lose') #back in time
+                    
             elif action == 2:
                 print("Options button clicked")
                 # Add your options logic here
