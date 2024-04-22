@@ -169,9 +169,9 @@ def play(timer):
             self.grass_tiles = []
     
             #load images
-            dirt_img = pygame.image.load('png/dirt.png')
-            grass_img = pygame.image.load('png/grass.png')
-            lava_img=pygame.image.load('png/lava.png')
+            dirt_img = pygame.image.load('sprites/earthquake/png/dirt.png')
+            grass_img = pygame.image.load('sprites/earthquake/png/grass.png')
+            lava_img=pygame.image.load('sprites/earthquake/png/lava.png')
     
             row_count = 0
             for row in data:
@@ -251,7 +251,7 @@ def play(timer):
             self.animation_time = 500  # Time between each frame change (in milliseconds)
             self.last_update = pygame.time.get_ticks()  # Last time the frame was changed
             for i in range(1, 3):  # Assuming you have two lava images named lava1.png and lava2.png
-                img = pygame.image.load(f'png/lava{i}.png')
+                img = pygame.image.load(f'sprites/earthquake/png/lava{i}.png')
                 self.images.append(pygame.transform.scale(img, (tile_size, tile_size)))
             self.image = self.images[self.index]  # Set initial image
             self.rect = self.image.get_rect()
@@ -283,7 +283,7 @@ def play(timer):
     class Enemy(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            img = pygame.image.load('png/redapple.png')
+            img = pygame.image.load('sprites/earthquake/png/redapple.png')
             self.image = pygame.transform.scale(img, (tile_size // 2, tile_size // 2))
             self.rect = self.image.get_rect()
             # Adjust position based on scrolling offset
@@ -292,7 +292,7 @@ def play(timer):
     class Exit(pygame.sprite.Sprite):
         def __init__(self, x, y):
             pygame.sprite.Sprite.__init__(self)
-            img = pygame.image.load('png/door.png')
+            img = pygame.image.load('sprites/earthquake/png/door.png')
             self.image = pygame.transform.scale(img, (tile_size, int(tile_size * 1.5)))
             self.rect = self.image.get_rect()
             self.rect.x = x
@@ -329,14 +329,14 @@ def play(timer):
 
     run = True
     lose_screem=pygame.image.load("sprites/earthquake/png/d-2.jpg")
-    win_screem=pygame.image.load("png/sky.png")
+    win_screem=pygame.image.load("sprites/earthquake/png/sky.png")
     background_image=pygame.image.load("sprites/earthquake/png/hell-2.jpg")
 
     start_time = datetime.now()  # Get the current time in milliseconds
     game_time = 120  # 2 minutes in seconds
     font = pygame.font.SysFont(None, 36)  # Define font for the timer
     #buttoms 
-    exit_img=pygame.image.load("png/door.png")
+    exit_img=pygame.image.load("sprites/earthquake/png/door.png")
     exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
     bg_x = 0
     bg_y = 0
@@ -405,3 +405,4 @@ def play(timer):
         pygame.display.update()
     
         clock.tick(fps)  # Limit frame rate to 30 frames per second
+play((0,0))
