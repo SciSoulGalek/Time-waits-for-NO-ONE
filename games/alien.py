@@ -126,6 +126,7 @@ def play(timer_text):
     #win screen 
     win_screem2=pygame.image.load("sprites/final/win.png")
     win_screem1=pygame.image.load("sprites/final/winh.png")
+    win_screem3=pygame.image.load("sprites/main/youmadeitwin.png")
     timer = 0
     TIMER = pygame.USEREVENT + 1
     pygame.time.set_timer(TIMER, 250)
@@ -246,6 +247,7 @@ def play(timer_text):
             else:
                 window.blit(win_screem1, (0, 0))
                 window.blit(win_screem2, (0, 200))
+                window.blit(win_screem3, (0, 200))
                 
         
                 
