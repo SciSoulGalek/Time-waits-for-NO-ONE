@@ -3,7 +3,7 @@ def play():
     import sys
     import random
     import pygame
-    from datetime import datetime
+    from datetime import datetime, timedelta
     pygame.init()
 
     # colors
@@ -24,6 +24,7 @@ def play():
             self.image = pygame.image.load("sprites/maze/player.png") 
             self.image = pygame.transform.scale(self.image, (20, 20))
             self.direction = 'right'
+            self.counter = 3
 
 
         def move(self, dx, dy):
@@ -74,6 +75,18 @@ def play():
             walls.append(self)
             self.rect = pygame.Rect(pos[0], pos[1], 20, 20)
             self.image = pygame.image.load(f"sprites/maze/{wall_choose[random.randint(0, 7)]}.png")
+
+    class Key(pygame.sprite.Sprite):
+
+        def __init__(self, pos, key_type):
+            super().__init__()
+            self.rect = pygame.Rect(pos[0], pos[1], 20, 20)
+            if key_type == 'greenapple':
+                self.image = pygame.image.load("sprites/maze/greenapple.png")
+            elif key_type == 'redapple':
+                self.image = pygame.image.load("sprites/maze/redapple.png")
+            self.image = pygame.transform.scale(self.image, (20, 20))
+            self.key_type = key_type
 
     class Escape(pygame.sprite.Sprite):
 
@@ -148,9 +161,38 @@ def play():
         y += 20
         x = 0
 
-    #Start time
-    start_time = datetime.now()
+    # Determine the number of keys of each type
+    num_gold_keys = 3
+    num_silver_keys = 3
 
+    # Keep track of available positions to place keys
+    available_positions = []
+
+    # Iterate through the level to find available positions
+    for y, row in enumerate(level):
+        for x, col in enumerate(row):
+            if col == ' ':
+                available_positions.append((x * 20, y * 20))  # Convert grid position to pixel position
+
+    # Shuffle the available positions
+    random.shuffle(available_positions)
+
+    # Create gold keys
+    for _ in range(num_gold_keys):
+        if available_positions:
+            pos = available_positions.pop()
+            keys.append(Key(pos, 'greenapple'))
+
+    # Create silver keys
+    for _ in range(num_silver_keys):
+        if available_positions:
+            pos = available_positions.pop()
+            keys.append(Key(pos, 'redapple'))
+
+
+    #Start time
+    start_time = datetime.strptime("08:30", "%H:%M")
+    add_minute = True
     running = True
     while running:
         for e in pygame.event.get():
@@ -158,17 +200,23 @@ def play():
                 running = False
             if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
                 running = False
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_KP_PLUS:
+                start_time += timedelta(minutes=1)
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_KP_MINUS:
+                start_time -= timedelta(minutes=1)
 
-        # Calculate elapsed time
-        elapsed_time = datetime.now() - start_time
-        # Convert elapsed time to a string
-        timer_text = str(elapsed_time)
-        # Extract minutes and seconds
-        minutes = elapsed_time.seconds // 60
-        seconds = elapsed_time.seconds % 60
-        # Format minutes and seconds into a string
-        timer_text = "{:02}:{:02}".format(minutes, seconds)
+        # Update time
+        current_time = datetime.now()
+        elapsed_time = current_time - start_time
+        # Check if the minute should be added
+        if elapsed_time.seconds % 10 == 0 and add_minute:
+            start_time += timedelta(minutes=1)
+            add_minute = False  # Set the flag to False to indicate that the minute has been added
+        elif elapsed_time.seconds % 10 != 0:
+            add_minute = True  # Reset the flag if the condition is no longer true
 
+        # Render time
+        timer_text = start_time.strftime("%H:%M")
 
         key = pygame.key.get_pressed()
         if key[pygame.K_LEFT]:
@@ -185,7 +233,7 @@ def play():
             player.direction = 'down'
 
         if player.rect.colliderect(escape.rect):
-            return (True, (minutes, seconds))
+            return (True, (timer_text))
         screen.fill(DARK_GRAY)
         for wall in walls:
             pygame.draw.rect(screen, (DARK_GRAY), wall.rect)

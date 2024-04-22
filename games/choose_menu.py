@@ -67,11 +67,13 @@ def activate(darkness_number):
                 screen.blit(dark_overlay, (0, 0))
                 screen.blit(skip, (900, 600))
 
-            # Draw the dark overlay on top
-            something = 'This is cutscene'
-            something_surface = font.render(something, True, 'white')
-            screen.blit(something_surface, (WIDTH // 2, HEIGHT // 2))
-            screen.blit(skip, (900, 600))
+            else:
+                # Draw the dark overlay on top
+                something = 'Jesus, i overslept'
+                something_surface = font.render(something, True, 'white')
+                screen.blit(something_surface, (WIDTH // 2, HEIGHT // 2))
+                screen.blit(skip, (900, 600))
+
             pygame.display.update()
         else:  
             for event in pygame.event.get():
