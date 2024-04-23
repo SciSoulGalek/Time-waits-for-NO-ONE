@@ -19,6 +19,11 @@ BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
+# Win screen 
+win_screen1 = pygame.image.load("sprites/final/winch.png")
+win_screen2 = pygame.image.load("sprites/final/win.png")
+win_screen3 = pygame.image.load("sprites/main/youmadeitwin.png")
+
 background = pygame.image.load("sprites/main/room/room1.png")
 font = pygame.font.Font(None, 36)
 
@@ -31,6 +36,15 @@ quit_sprite = pygame.image.load("sprites/main/quit.png")
 quit_sprite = pygame.transform.scale(quit_sprite, button_size)
 logo_sprite = pygame.image.load("sprites/main/mainlogo.png")
 logo_sprite = pygame.transform.scale(logo_sprite, (450, 450))
+skip = pygame.image.load("sprites/main/skip.png")
+skip_rect = skip.get_rect(topleft = (900, 600))
+
+clocks = [906, '906-2', 906, 905, 905, 905, 904, 904, 904, 903, 903, 902, 902, 901, 901, 900, 858, 856, 854, 852, 850, 848, 846, 844, 842, 840, 839, 838, 837, 836, 836, 835, 835, 834, 834, 833, 833, 833, 832, 832, 832, 831, 831, 831, 830, '830-2', 830]
+animation = []
+for clock_value in clocks:
+    filename = f"sprites/clock/{clock_value}.png"
+    clock = pygame.image.load(filename)
+    animation.append(clock)
 
 # Darken the background image
 dark_overlay = pygame.Surface((WIDTH, HEIGHT))
@@ -81,6 +95,28 @@ class Menu:
                     return button.action
         return None
 
+def back_in_time(timer):
+    while True:    
+        for event in pygame.event.get():  
+            if event.type == TIMER:
+                timer += 1
+            if event.type == pygame.QUIT:
+                return
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                # Check if the mouse click is within the back button
+                if skip_rect.collidepoint(pos):
+                    return
+        if timer < len(clocks):
+                screen.blit(animation[timer], (0, 0))
+        screen.blit(skip, (900, 600))
+        pygame.display.update()
+
+timer = 0
+TIMER = pygame.USEREVENT + 1
+pygame.time.set_timer(TIMER, 250)
+cutscene = False
+
 # Main menu loop
 def main_menu():
     menu = Menu()
@@ -110,13 +146,15 @@ def main_menu():
                     if win2:
                         win3, timer_text = alien.play(timer_text)
                         if win3:
-                            print('you win') #win screen
+                            screen.blit(win_screen1, (0, 0))
+                            screen.blit(win_screen2, (0, 200))
+                            screen.blit(win_screen3, (0, 200)) #win screen
                         else:
-                            print('you lose') #back in time
+                            back_in_time(timer)
                     else:
-                        print('you lose') #back in time
+                        back_in_time(timer)
                 else:
-                    print('you lose') #back in time
+                    back_in_time(timer)
                     
             elif action == 2:
                 print("Options button clicked")
@@ -124,14 +162,6 @@ def main_menu():
             elif action == 3:
                 pygame.quit()
                 sys.exit()
-
-# Game function
-def start_game():
-    # Game logic and rendering
-    print("Starting game...")
-    # Simulating game end
-    print("Game over.")
-    return_to_main_menu()
 
 # Options menu function
 def options_menu():

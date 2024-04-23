@@ -508,6 +508,7 @@ def play(timer_text):
 
                 
             elif game_over == 1:  # Victory condition
+                bgsound.stop()
                 return (True, timer_text)  # Display the win screen
             else:
                 for coin in coin_group:
@@ -523,5 +524,5 @@ def play(timer_text):
                 
             pygame.display.update()
             clock.tick(fps)  # Limit frame rate to 30 frames per second
-
+    bgsound.stop()
     return (False, timer_text)
