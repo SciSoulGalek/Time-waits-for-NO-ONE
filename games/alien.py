@@ -250,10 +250,12 @@ def play(timer_text):
             score_x = 20
             score_y = 20
             window.blit(score_surface, (score_x, score_y))
-            if score==5:
+            if score >= 2:
                 window.blit(lose_screem1, (0, 0))
                 window.blit(lose_screem2, (0, 200))
                 window.blit(lose_screem3 , (380,150))
+            else:
+                return (True, timer_text)
 
             timer_surface = question_font.render(timer_text, True, (255, 255, 255))
             window.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))

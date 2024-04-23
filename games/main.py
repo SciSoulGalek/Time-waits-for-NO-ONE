@@ -3,6 +3,9 @@ import choose_menu, bus, maze, earthquake, alien
 
 #Initialize Pygame
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load('sound/main/mainminus.wav')
+pygame.mixer.music.play(-1)
 
 # Set up the display
 WIDTH, HEIGHT = 1100, 700
@@ -119,6 +122,7 @@ cutscene = False
 
 # Main menu loop
 def main_menu():
+    global win1
     menu = Menu()
     running = True
 
@@ -134,6 +138,10 @@ def main_menu():
             if event.type == pygame.QUIT:
                 running = False
             action = menu.handle_event(event)
+            if action:
+                pygame.mixer.music.pause()
+            else:
+                pygame.mixer.music.unpause()
             if action == 1:
                 chose = choose_menu.activate(darkness)
                 if chose == 1:
