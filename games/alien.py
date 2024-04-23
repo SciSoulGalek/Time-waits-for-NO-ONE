@@ -27,6 +27,7 @@ def play(timer_text):
         animation.append(alien)
     skip = pygame.image.load("sprites/main/skip.png")
     skip_rect = skip.get_rect(topleft = (900, 600))
+    bgsound = pygame.mixer.Sound("sound/alien/ufo.wav")
 
     # Questions and answers
     questions = [
@@ -157,6 +158,7 @@ def play(timer_text):
             pygame.display.update()
         
         else:
+            bgsound.stop()
             # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
