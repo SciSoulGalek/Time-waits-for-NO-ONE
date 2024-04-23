@@ -27,6 +27,8 @@ def play(timer_text):
         animation.append(alien)
     skip = pygame.image.load("sprites/main/skip.png")
     skip_rect = skip.get_rect(topleft = (900, 600))
+
+    #sound
     bgsound = pygame.mixer.Sound("sound/alien/ufo.wav")
 
     # Questions and answers
@@ -133,6 +135,7 @@ def play(timer_text):
     cutscene = True
     # Create the main loop
     running = True
+    bgsound.play(-1)
     while running:
         if cutscene:
             for event in pygame.event.get():  
@@ -151,15 +154,16 @@ def play(timer_text):
                 window.blit(skip, (900, 600))
 
             # Draw the dark overlay on top
-            something = 'This is cutscene'
-            something_surface = question_font.render(something, True, 'white')
-            window.blit(something_surface, (WIDTH // 2, HEIGHT // 2))
+            
+            
+            
             window.blit(skip, (900, 600))
             pygame.display.update()
         
         else:
-            bgsound.stop()
             # Handle events
+            bgsound.stop()
+    
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
@@ -252,12 +256,12 @@ def play(timer_text):
             score_x = 20
             score_y = 20
             window.blit(score_surface, (score_x, score_y))
-            if score >= 2:
-                window.blit(lose_screem1, (0, 0))
-                window.blit(lose_screem2, (0, 200))
+            if score>=4:
+               
+                window.blit(lose_screem2, (0, 0))
+                window.blit(lose_screem1 , (0,400))
                 window.blit(lose_screem3 , (380,150))
-            else:
-                return (True, timer_text)
+            
 
             timer_surface = question_font.render(timer_text, True, (255, 255, 255))
             window.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
@@ -275,4 +279,6 @@ def play(timer_text):
             # Update the display
             pygame.display.flip()
 
-    return (False, timer_text)
+    #return (False, timer_text)
+
+
