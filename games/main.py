@@ -152,7 +152,7 @@ def main_menu():
                 if win1:
                     win2, timer_text = earthquake.play(timer_text)
                     if win2:
-                        win3, timer_text = alien.play(timer_text)
+                        win3 = alien.play(timer_text)
                         if win3:
                             screen.blit(win_screen1, (0, 0))
                             screen.blit(win_screen2, (0, 200))

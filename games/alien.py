@@ -256,11 +256,11 @@ def play(timer_text):
             score_x = 20
             score_y = 20
             window.blit(score_surface, (score_x, score_y))
-            if score>=4:
+            # if score>=4:
                
-                window.blit(lose_screem2, (0, 0))
-                window.blit(lose_screem1 , (0,400))
-                window.blit(lose_screem3 , (380,150))
+            #     window.blit(lose_screem2, (0, 0))
+            #     window.blit(lose_screem1 , (0,400))
+            #     window.blit(lose_screem3 , (380,150))
             
 
             timer_surface = question_font.render(timer_text, True, (255, 255, 255))
@@ -271,14 +271,19 @@ def play(timer_text):
                 # Move to the next question if there is one
                 if current_question_index < NUM_QUESTIONS - 1:
                     current_question_index += 1
+                    if current_question_index == 4:
+                        if score>=4:
+                            window.blit(lose_screem2, (0, 0))
+                            window.blit(lose_screem1 , (0,400))
+                            window.blit(lose_screem3 , (380,150))
+                        else:
+                            return True
                     ticks_time = current_ticks_time  # Reset the timer
                     create_buttons((WIDTH - RECT_WIDTH) // 2 + 120, (HEIGHT - RECT_HEIGHT) // 2 - 60)
                 else:
-                    return (True, timer_text)  # End the game if there are no more questions
+                    return True  # End the game if there are no more questions
 
             # Update the display
             pygame.display.flip()
-
-    #return (False, timer_text)
 
 
