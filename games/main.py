@@ -50,12 +50,19 @@ logo_sprite = pygame.transform.scale(logo_sprite, (450, 450))
 skip = pygame.image.load("sprites/main/skip.png")
 skip_rect = skip.get_rect(topleft = (900, 600))
 
-clocks = [906, '906-2', 906, 905, 905, 905, 904, 904, 904, 903, 903, 902, 902, 901, 901, 900, 858, 856, 854, 852, 850, 848, 846, 844, 842, 840, 839, 838, 837, 836, 836, 835, 835, 834, 834, 833, 833, 833, 832, 832, 832, 831, 831, 831, 830, '830-2', 830, '830-2', 830, '830-2', 830, '830-2', 830, '830-2', 830]
+clocks = [906, '906-2', 906, 905, 905, 905, 904, 904, 904, 903, 903, 902, 902, 901, 901, 900, 858, 856, 854, 852, 850, 848, 846, 844, 842, 840, 839, 838, 837, 836, 836, 835, 835, 834, 834, 833, 833, 833, 832, 832, 832, 831, 831, 831, 830]
+clocks2 = ['830-2', 830, '830-2', 830, '830-2', 830, '830-2', 830, '830-2', 830]
 animation = []
+animation2 = []
 for clock_value in clocks:
     filename = f"sprites/clock/{clock_value}.png"
     clock = pygame.image.load(filename)
     animation.append(clock)
+
+for clock_value in clocks2:
+    filename = f"sprites/clock/{clock_value}.png"
+    clock = pygame.image.load(filename)
+    animation2.append(clock)
 
 # Darken the background image
 dark_overlay = pygame.Surface((WIDTH, HEIGHT))
@@ -110,6 +117,8 @@ def back_in_time(timer):
     alarm_played = False
     while True:    
         for event in pygame.event.get():  
+            if event.type == TIMER:
+                timer += 1
             if event.type == pygame.QUIT:
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -123,6 +132,8 @@ def back_in_time(timer):
                 screen.blit(animation[timer], (0, 0))
         else:
             if not alarm_played:  # Check if alarm has not been played yet
+                if timer - len(clocks) < len(clocks2):
+                    screen.blit(animation2[timer - len(clocks)], (0, 0))
                 play_alarm()
                 pygame.mixer.music.load('sound/main/mainminus.wav')
                 alarm_played = True

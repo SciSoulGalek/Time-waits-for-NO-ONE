@@ -387,6 +387,7 @@ def play(timer_text):
     add_minute = True
     run = True
     late_screen = False
+    lose_screen = False
     # Inside the game loop
     while run:
         if cutscene:
@@ -394,7 +395,7 @@ def play(timer_text):
                 if event.type == TIMER:
                     timer += 1
                 if event.type == pygame.QUIT:
-                    return None, timer_text
+                    return False, timer_text
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     # Check if the mouse click is within the back button
@@ -412,15 +413,24 @@ def play(timer_text):
                     screen.blit(text_surface, text_position)
                     text_shown = True
             screen.blit(skip, (950, 0))
-            pygame.display.update()
+            pygame.display.update()    
         elif late_screen:
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
-                    return None, timer_text
+                    return False, timer_text
             bgsound.stop()
             screen.blit(late_screen1, (0, 0))
             screen.blit(late_screen2, (0, 200))
             screen.blit(late_screen3 , (380, 150))
+            pygame.display.update()
+        elif lose_screen:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    return False, timer_text
+            bgsound.stop()
+            screen.blit(lose_screem1, (0, 0))
+            screen.blit(lose_screem2, (0, 200))
+            screen.blit(lose_screem3 , (380,150))
             pygame.display.update()
         else:
             for event in pygame.event.get():
@@ -479,7 +489,6 @@ def play(timer_text):
                 game_over = 1  # Set game_over to a value indicating victory
                 bgsound.stop()
             
-
             # Handle collisions with coins and enemies
             for coin in coin_collisions:
                 start_time -= timedelta(minutes=1)  # Add 5 seconds to the remaining time
@@ -495,12 +504,7 @@ def play(timer_text):
 
             # Update and draw coins and enemies
             if game_over == -1:
-                bgsound.stop()
-                screen.blit(lose_screem1, (0, 0))
-                screen.blit(lose_screem2, (0, 200))
-                screen.blit(lose_screem3 , (380,150))
-
-                
+                lose_screen = True
             elif game_over == 1:  # Victory condition
                 bgsound.stop()
                 return (True, timer_text)  # Display the win screen
