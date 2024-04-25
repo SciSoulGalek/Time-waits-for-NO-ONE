@@ -7,6 +7,7 @@ pygame.mixer.init()
 pygame.mixer.music.load('sound/main/mainminus.wav')
 pygame.mixer.music.play(-1)
 alarm = pygame.mixer.Sound('sound/other/alarmclock.wav')
+volume = 1
 
 # Set up the display
 WIDTH, HEIGHT = 1100, 700
@@ -29,9 +30,15 @@ win_screen2 = pygame.image.load("sprites/final/winch.png")
 win_screen3 = pygame.image.load("sprites/main/youmadeitwin.png")
 
 background = pygame.image.load("sprites/main/room/room1.png")
-font = pygame.font.Font(None, 36)
+
+# Create a font object
+font = pygame.font.Font("fonts/superfont.ttf", 22)  # Adjust the font and size as needed
+font_big = pygame.font.Font(None, 190)  # Adjust the font and size as needed
 
 button_size = (225, 75)
+main_menu_button = pygame.image.load("sprites/choose_menu/main_menu.png")
+main_menu_button = pygame.transform.scale(main_menu_button, (150, 50))
+main_menu_button_rect = main_menu_button.get_rect(topleft = (50, 50))
 start_sprite = pygame.image.load("sprites/main/start.png")
 start_sprite = pygame.transform.scale(start_sprite, button_size)
 options_sprite = pygame.image.load("sprites/main/options.png")
@@ -140,7 +147,6 @@ def play_music():
 def play_alarm():
     alarm = pygame.mixer.Sound('sound/other/alarmclock.wav').play()
 
-
 timer = 0
 TIMER = pygame.USEREVENT + 1
 pygame.time.set_timer(TIMER, 250)
@@ -202,6 +208,7 @@ def main_menu():
                     
             elif action == 2:
                 print("Options button clicked")
+                options_menu()
                 # Add your options logic here
             elif action == 3:
                 pygame.quit()
@@ -209,13 +216,34 @@ def main_menu():
 
 # Options menu function
 def options_menu():
-    # Options menu logic and rendering
-    print("Options menu...")
-    return_to_main_menu()
+    while True:
+        global volume
+        for event in pygame.event.get():  
+            if event.type == pygame.QUIT:
+                return None, timer_text
+            elif event.type == pygame.KEYDOWN:
+                #volume
+                if event.key == pygame.K_UP:
+                    volume = min(1.0, volume + 0.1)
+                    pygame.mixer.music.set_volume(volume)
+                elif event.key == pygame.K_DOWN:
+                    volume = max(0.0, volume - 0.1)
+                    pygame.mixer.music.set_volume(volume)
 
-# Return to main menu function
-def return_to_main_menu():
-    main_menu()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                # Check if the mouse click is within the back button
+                if main_menu_button_rect.collidepoint(pos):
+                    return
+        
+        screen.blit(background, (0, 0))
+        # Draw the dark overlay on top
+        screen.blit(dark_overlay, (0, 0))
+        # Draw overlay on top
+        volume_text = font_big.render(f'Volume: {int(volume * 100)}', True, (255, 255, 255)) 
+        screen.blit(volume_text, (200, HEIGHT // 2))
+        screen.blit(main_menu_button, (50, 50))
+        pygame.display.update()
 
 # Run main menu
 main_menu()

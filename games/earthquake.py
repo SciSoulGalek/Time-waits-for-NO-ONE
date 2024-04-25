@@ -397,8 +397,7 @@ def play(timer_text):
                     return None, timer_text
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
-
-                        # Check if the mouse click is within the back button
+                    # Check if the mouse click is within the back button
                     if skip_rect.collidepoint(pos):
                         bgsound.play(-1)
                         earthqu.stop()
