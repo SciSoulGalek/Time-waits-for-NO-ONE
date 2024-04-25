@@ -181,7 +181,7 @@ def play():
             #Quit
             if event.type == QUIT:
                 pygame.mixer.music.stop()
-                return
+                return None, timer_text
             
         # Calculate elapsed time
         elapsed_time = datetime.now() - start_time

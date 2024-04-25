@@ -5,6 +5,7 @@ def play(timer_text):
     
     # Initialize Pygame
     pygame.init()
+    pygame.mixer.init()
     
     # Constants
     WIDTH, HEIGHT = 1100, 700
@@ -19,6 +20,12 @@ def play(timer_text):
     QUESTION_DURATION = 10  # 10 seconds per question
     NUM_QUESTIONS = 5  # Number of questions to select
     
+    # Initialize fonts
+    question_font = pygame.font.Font(None, QUESTION_FONT_SIZE)
+    answer_font = pygame.font.Font(None, ANSWER_FONT_SIZE)
+    score_font = pygame.font.Font(None, 28)
+    font = pygame.font.Font("fonts/superfont.ttf", 22)
+    
     start_time = datetime.strptime(timer_text, "%H:%M")
 
     animation = []
@@ -26,10 +33,23 @@ def play(timer_text):
         alien = pygame.image.load(f"sprites/alien/square/пришельцы{i + 1}.png")
         animation.append(alien)
     skip = pygame.image.load("sprites/main/skip.png")
-    skip_rect = skip.get_rect(topleft = (900, 600))
+    skip_rect = skip.get_rect(topleft = (950, 0))
+    next = pygame.image.load("sprites/main/next.png")
+    next_rect = next.get_rect(topleft = (900, 580))
+
+    dialog1 = pygame.image.load(f"sprites/alien/square/сквер.перс.png")
+    dialog_text1_part1 = font.render('Oh god! Who are you?', True, (255, 255, 255))
+    dialog_text1_part2 = font.render('Am I dreaming?', True, (255, 255, 255))
+    dialog_text1_part3 = font.render('OH NOOO', True, (255, 255, 255))
+    dialog2 = pygame.image.load(f"sprites/alien/square/сквер.пришелец.png")
+    dialog_text2_part1 = font.render('Hello, human being!', True, (255, 255, 255))
+    dialog_text2_part2 = font.render('I need smart young people!', True, (255, 255, 255))
+    dialog_text2_part3 = font.render('Answer a couple of questions.', True, (255, 255, 255))
+    dialog_text2_part4 = font.render('I know that KBTU has smart students.', True, (255, 255, 255))
 
     #sound
     bgsound = pygame.mixer.Sound("sound/alien/ufo.wav")
+    bgsound.set_volume(50)
 
     # Questions and answers
     questions = [
@@ -89,20 +109,14 @@ def play(timer_text):
     selected_questions = random.sample(questions, NUM_QUESTIONS)
     
     # Create the display
-    window = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
     
-    # Load the background image and resize it to fit the window
+    # Load the background image and resize it to fit the screen
     bg_image = pygame.image.load(BG_IMAGE_PATH)
     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
     
-    # Initialize fonts
-    question_font = pygame.font.Font(None, QUESTION_FONT_SIZE)
-    answer_font = pygame.font.Font(None, ANSWER_FONT_SIZE)
-    score_font = pygame.font.Font(None, 28)
-    
     # Initialize game variables
     current_question_index = 0
-    ticks_time = pygame.time.get_ticks() // 1000
     score = 0  # Initialize score
     
     # Create buttons list
@@ -125,61 +139,95 @@ def play(timer_text):
     # Create buttons for the first question
     create_buttons((WIDTH - RECT_WIDTH) // 2 + 120, (HEIGHT - RECT_HEIGHT) // 2 - 60)
     #lose screens 
-    lose_screem2=pygame.image.load("sprites/final/alien.png")
-    lose_screem1=pygame.image.load("sprites/final/aliench.png")
-    lose_screem3=pygame.image.load("sprites/main/yourelateloss.png")
+    gone_screen1 = pygame.image.load("sprites/final/alien.png")
+    gone_screen2 = pygame.image.load("sprites/final/aliench.png")
+    gone_screen3 = pygame.image.load("sprites/main/yourelateloss.png")
     
+    next_counter = 0
+
     timer = 0
     TIMER = pygame.USEREVENT + 1
     pygame.time.set_timer(TIMER, 250)
+
+    ticks_time = 0
+
     cutscene = True
-    # Create the main loop
     running = True
-    bgsound.play(-1)
+    add_minute = True
+    result = False
+    bgsound.play()
     while running:
         if cutscene:
             for event in pygame.event.get():  
                 if event.type == TIMER:
                     timer += 1
                 if event.type == pygame.QUIT:
-                    return
+                    return None, timer_text
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     # Check if the mouse click is within the back button
                     if skip_rect.collidepoint(pos):
                         cutscene = False
+                    if next_rect.collidepoint(pos):
+                        next_counter += 1
 
             if timer < 20:
-                window.blit(animation[timer % 20], (0, 0))
-                window.blit(skip, (900, 600))
+                screen.blit(animation[timer % 20], (0, 0))
 
-            # Draw the dark overlay on top
+            if next_counter == 1:
+                screen.blit(dialog1, (0, 0))
+                screen.blit(dialog_text1_part1, (175, 575))
+
+            if next_counter == 2:
+                screen.blit(dialog1, (0, 0))
+                screen.blit(dialog_text1_part2, (175, 575))
             
+            if next_counter == 3:
+                screen.blit(dialog2, (0, 0))
+                screen.blit(dialog_text2_part1, (175, 575))
+
+            if next_counter == 4:
+                screen.blit(dialog2, (0, 0))
+                screen.blit(dialog_text2_part2, (175, 575))
             
+            if next_counter == 5:
+                screen.blit(dialog2, (0, 0))
+                screen.blit(dialog_text2_part3, (175, 575))
+
+            if next_counter == 6:
+                screen.blit(dialog2, (0, 0))
+                screen.blit(dialog_text2_part4, (175, 575))
             
-            window.blit(skip, (900, 600))
+            if next_counter == 7:
+                screen.blit(dialog1, (0, 0))
+                screen.blit(dialog_text1_part3, (175, 575))
+
+            if next_counter == 8:
+                cutscene = False
+
+
+            screen.blit(next, (900, 580))                
+            screen.blit(skip, (950, 0))
             pygame.display.update()
-        
+        elif result:
+            for event in pygame.event.get():  
+                if event.type == pygame.QUIT:
+                    return False, timer_text
+            if score >= 4:
+                screen.blit(gone_screen1, (0, 0))
+                screen.blit(gone_screen2, (0, 400))
+                screen.blit(gone_screen3, (380, 150))
+                pygame.display.update()
+            else:
+                return True, timer_text
+            
         else:
             # Handle events
             bgsound.stop()
     
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return
-                elif event.type == pygame.KEYDOWN:
-                    # Toggle full window with F11
-                    if event.key == pygame.K_F11:
-                        if pygame.display.get_surface().get_flags() & pygame.FULLwindow:
-                            pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
-                        else:
-                            pygame.display.set_mode((0, 0), pygame.FULLwindow)
-                elif event.type == pygame.VIDEORESIZE:
-                    # Resize the window
-                    current_width, current_height = event.w, event.h
-                    window = pygame.display.set_mode((current_width, current_height), pygame.RESIZABLE)
-                    # Resize the background image
-                    bg_image = pygame.transform.scale(bg_image, (current_width, current_height))
+                    return None, timer_text
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # Check if any button was clicked
                     mouse_pos = pygame.mouse.get_pos()
@@ -196,12 +244,19 @@ def play(timer_text):
                                 ticks_time = pygame.time.get_ticks() // 1000 # Reset the timer
                                 create_buttons((WIDTH - RECT_WIDTH) // 2 + 120, (HEIGHT - RECT_HEIGHT) // 2 - 60)
                             else:
-                                running = False  # End the game if there are no more questions
+                                result = True  # End the game if there are no more questions
 
             # Calculate elapsed time and remaining time
             current_ticks_time = pygame.time.get_ticks() // 1000
             elapsed_ticks_time = current_ticks_time - ticks_time
+
+
+            # Used to get rid of the first question timer bug
+            if current_question_index == 0:
+                elapsed_ticks_time = 0
+            
             remaining_time = max(0, QUESTION_DURATION - elapsed_ticks_time)
+            
             current_time = datetime.now()
             elapsed_time = current_time - start_time
             # Check if the minute should be added
@@ -214,18 +269,18 @@ def play(timer_text):
             # Render time
             timer_text = start_time.strftime("%H:%M")
 
-            # Get current window size
-            current_width, current_height = window.get_size()
+            # Get current screen size
+            current_width, current_height = screen.get_size()
 
             # Calculate rectangle position
             rect_x = (current_width - RECT_WIDTH) // 2 + 120  # Move right by 40 pixels
             rect_y = (current_height - RECT_HEIGHT) // 2 - 60  # Move up by 20 pixels
 
             # Draw the background image
-            window.blit(bg_image, (0, 0))
+            screen.blit(bg_image, (0, 0))
 
             # Draw the rectangle outline
-            pygame.draw.rect(window, (255, 255, 255), pygame.Rect(rect_x, rect_y, RECT_WIDTH, RECT_HEIGHT), 2)
+            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(rect_x, rect_y, RECT_WIDTH, RECT_HEIGHT), 2)
 
             # Draw the current question text at the top of the rectangle
             question_data = selected_questions[current_question_index]
@@ -233,57 +288,43 @@ def play(timer_text):
             question_surface = question_font.render(question_text, True, (255, 255, 255))
             question_x = rect_x + (RECT_WIDTH - question_surface.get_width()) // 2
             question_y = rect_y + 20  # Adjust the 20 offset as needed
-            window.blit(question_surface, (question_x, question_y))
+            screen.blit(question_surface, (question_x, question_y))
 
             # Draw the buttons with answers
             for button_rect, answer in buttons:
-                pygame.draw.rect(window, (255, 255, 255), button_rect, 2)
+                pygame.draw.rect(screen, (255, 255, 255), button_rect, 2)
                 answer_surface = answer_font.render(answer, True, (255, 255, 255))
                 answer_x = button_rect.x + (BUTTON_WIDTH - answer_surface.get_width()) // 2
                 answer_y = button_rect.y + (BUTTON_HEIGHT - answer_surface.get_height()) // 2
-                window.blit(answer_surface, (answer_x, answer_y))
+                screen.blit(answer_surface, (answer_x, answer_y))
 
-            # Render the timer at the top center of the window
+            # Render the timer at the top center of the screen
             timer_text_quiz = f"Time left: {remaining_time}s"
             timer_surface_quiz = question_font.render(timer_text_quiz, True, (255, 255, 255))
             timer_x = current_width // 2 - timer_surface_quiz.get_width() // 2
             timer_y = 20
-            window.blit(timer_surface_quiz, (timer_x, timer_y))
+            screen.blit(timer_surface_quiz, (timer_x, timer_y))
 
-            # Render the score at the top right of the window
+            # Render the score at the top right of the screen
             score_text = f"Score: {score}"
             score_surface = score_font.render(score_text, True, (255, 255, 255))
             score_x = 20
             score_y = 20
-            window.blit(score_surface, (score_x, score_y))
-            # if score>=4:
-               
-            #     window.blit(lose_screem2, (0, 0))
-            #     window.blit(lose_screem1 , (0,400))
-            #     window.blit(lose_screem3 , (380,150))
-            
-
+            screen.blit(score_surface, (score_x, score_y))
+        
             timer_surface = question_font.render(timer_text, True, (255, 255, 255))
-            window.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
+            screen.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
             
             # Check if time is up for the current question
             if remaining_time <= 0:
                 # Move to the next question if there is one
                 if current_question_index < NUM_QUESTIONS - 1:
                     current_question_index += 1
-                    if current_question_index == 4:
-                        if score>=4:
-                            window.blit(lose_screem2, (0, 0))
-                            window.blit(lose_screem1 , (0,400))
-                            window.blit(lose_screem3 , (380,150))
-                        else:
-                            return True
                     ticks_time = current_ticks_time  # Reset the timer
                     create_buttons((WIDTH - RECT_WIDTH) // 2 + 120, (HEIGHT - RECT_HEIGHT) // 2 - 60)
                 else:
-                    return True  # End the game if there are no more questions
+                    result = True  # End the game if there are no more questions
 
             # Update the display
             pygame.display.flip()
-
 

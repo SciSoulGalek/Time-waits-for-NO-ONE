@@ -12,6 +12,10 @@ def play():
     DARK_GRAY = (108, 108, 108)
 
     wall_choose = ['roof1', 'roof2', 'roof3', 'roof4', 'roof5', 'tree1', 'tree2', 'flower']
+    
+    lose_screen1 = pygame.image.load("sprites/final/lose.png")
+    lose_screen2 = pygame.image.load("sprites/final/losech.png")
+    lose_screen3 = pygame.image.load("sprites/main/yourelateloss.png")
 
     global direction
     direction = 'right'
@@ -200,77 +204,85 @@ def play():
     start_time = datetime.strptime("08:30", "%H:%M")
     add_minute = True
     running = True
+    lose_screen = False
     while running:
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT:
-                running = False
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
-                running = False
+        if not lose_screen:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    return None, timer_text
 
-        # Update time
-        current_time = datetime.now()
-        elapsed_time = current_time - start_time
-        # Check if the minute should be added
-        if elapsed_time.seconds % 10 == 0 and add_minute:
-            start_time += timedelta(minutes=1)
-            add_minute = False  # Set the flag to False to indicate that the minute has been added
-        elif elapsed_time.seconds % 10 != 0:
-            add_minute = True  # Reset the flag if the condition is no longer true
-        # Adjust time based on key pickup
-        if player.add_time:
-            start_time += timedelta(minutes=1)  # Add a minute to the start time
-            player.add_time = False  # Reset add_time to False
-        elif player.sub_time:
-            start_time -= timedelta(minutes=1)  # Subtract a minute from the start time
-            player.sub_time = False  # Reset sub_time to False
+            # Update time
+            current_time = datetime.now()
+            elapsed_time = current_time - start_time
+            # Check if the minute should be added
+            if elapsed_time.seconds % 10 == 0 and add_minute:
+                start_time += timedelta(minutes=1)
+                add_minute = False  # Set the flag to False to indicate that the minute has been added
+            elif elapsed_time.seconds % 10 != 0:
+                add_minute = True  # Reset the flag if the condition is no longer true
+            # Adjust time based on key pickup
+            if player.add_time:
+                start_time += timedelta(minutes=1)  # Add a minute to the start time
+                player.add_time = False  # Reset add_time to False
+            elif player.sub_time:
+                start_time -= timedelta(minutes=1)  # Subtract a minute from the start time
+                player.sub_time = False  # Reset sub_time to False
 
-        # Render time
-        timer_text = start_time.strftime("%H:%M")
+            # Render time
+            timer_text = start_time.strftime("%H:%M")
 
-        key = pygame.key.get_pressed()
-        if key[pygame.K_LEFT]:
-            player.move(-2, 0)
-            player.direction = 'left'
-        if key[pygame.K_RIGHT]:
-            player.move(2, 0)
-            player.direction = 'right'
-        if key[pygame.K_UP]:
-            player.move(0, -2)
-            player.direction = 'up'
-        if key[pygame.K_DOWN]:
-            player.move(0, 2)
-            player.direction = 'down'
+            key = pygame.key.get_pressed()
+            if key[pygame.K_LEFT]:
+                player.move(-2, 0)
+                player.direction = 'left'
+            if key[pygame.K_RIGHT]:
+                player.move(2, 0)
+                player.direction = 'right'
+            if key[pygame.K_UP]:
+                player.move(0, -2)
+                player.direction = 'up'
+            if key[pygame.K_DOWN]:
+                player.move(0, 2)
+                player.direction = 'down'
 
-        for key in keys:
-            if player.rect.colliderect(key.rect):
-                if key.key_type == 'greenapple':
-                    player.add_time = True  # Set add_time to True when picking up a green apple
-                elif key.key_type == 'redapple':
-                    player.sub_time = False  # Set add_time to False when picking up a red apple
-                key.rect.x = 2000
-                key.rect.y = 2000
-                player.counter -= 1
+            for key in keys:
+                if player.rect.colliderect(key.rect):
+                    if key.key_type == 'greenapple':
+                        player.add_time = True  # Set add_time to True when picking up a green apple
+                    elif key.key_type == 'redapple':
+                        player.sub_time = False  # Set add_time to False when picking up a red apple
+                    key.rect.x = 2000
+                    key.rect.y = 2000
+                    player.counter -= 1
 
-        if player.rect.colliderect(escape.rect):
-            return (True, timer_text)
-        screen.fill(DARK_GRAY)
-        for wall in walls:
-            pygame.draw.rect(screen, (DARK_GRAY), wall.rect)
-            all_sprites_list.add(wall)
-        for key in keys:
-            pygame.draw.rect(screen,(DARK_GRAY), key.rect)
-            all_sprites_list.add(key)
+            if player.rect.colliderect(escape.rect):
+                return (True, timer_text)
+            screen.fill(DARK_GRAY)
+            for wall in walls:
+                pygame.draw.rect(screen, (DARK_GRAY), wall.rect)
+                all_sprites_list.add(wall)
+            for key in keys:
+                pygame.draw.rect(screen,(DARK_GRAY), key.rect)
+                all_sprites_list.add(key)
 
-        player.draw(screen)
+            player.draw(screen)
 
-        all_sprites_list.draw(screen)
-        
-        # Render text
-        timer_surface = font.render(timer_text, True, (255, 255, 255))
-        screen.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
-        
-        pygame.display.update()
-        clock.tick(100)
+            all_sprites_list.draw(screen)
 
-        pygame.display.update()
+            # Render text
+            timer_surface = font.render(timer_text, True, (255, 255, 255))
+            screen.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
+
+            if timer_text == '09:00':
+                lose_screen = True
+            pygame.display.update()
+            clock.tick(100)
+        else:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    return None, timer_text
+            screen.blit(lose_screen1, (0, 0))
+            screen.blit(lose_screen2, (0, 200))
+            screen.blit(lose_screen3 , (380, 150))
+            pygame.display.update()
     return (False, timer_text)

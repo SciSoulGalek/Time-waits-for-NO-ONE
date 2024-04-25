@@ -32,7 +32,7 @@ def activate(darkness_number):
     main_menu = pygame.transform.scale(main_menu, (150, 50))
     main_menu_rect = main_menu.get_rect(topleft = (50, 50))
     skip = pygame.image.load("sprites/main/skip.png")
-    skip_rect = skip.get_rect(topleft = (900, 600))
+    skip_rect = skip.get_rect(topleft = (950, 0))
 
     # Darken the background image
     dark_overlay = pygame.Surface((WIDTH, HEIGHT))
@@ -46,17 +46,22 @@ def activate(darkness_number):
     
     cutscene = True
     
+    screen.blit(background, (0, 0))
+    pygame.mixer.music.load("sound/other/alarmclock.wav")
+    pygame.mixer.music.play()
+    
     while True:
         if cutscene:
             for event in pygame.event.get():  
                 if event.type == TIMER:
                     timer += 1
                 if event.type == pygame.QUIT:
-                    return
+                    return None
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     # Check if the mouse click is within the back button
                     if skip_rect.collidepoint(pos):
+                        pygame.mixer.music.stop()
                         cutscene = False
 
             if timer < 22:
@@ -65,25 +70,25 @@ def activate(darkness_number):
                     dark_overlay.set_alpha(darkness)
                 screen.blit(animation[timer], (0, 0))
                 screen.blit(dark_overlay, (0, 0))
-                screen.blit(skip, (900, 600))
+                screen.blit(skip, (950, 0))
 
             else:
-                # Draw the dark overlay on top
-                something = 'Jesus, i overslept'
+                # Draw overlay on top
+                something = 'Oh no, i overslept'
                 something_surface = font.render(something, True, 'white')
-                screen.blit(something_surface, (WIDTH // 2, HEIGHT // 2))
-                screen.blit(skip, (900, 600))
+                screen.blit(something_surface, (200, 550))
+                screen.blit(skip, (950, 0))
 
             pygame.display.update()
         else:  
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return  
+                    return None
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     # Check if the mouse click is within the back button
                     if main_menu_rect.collidepoint(pos):
-                        return 0
+                        return None
                     
                     # Check if the mouse click is within game 1 area
                     if choose_bus_rect.collidepoint(pos):

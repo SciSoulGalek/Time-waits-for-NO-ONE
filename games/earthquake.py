@@ -6,42 +6,33 @@ def play(timer_text):
 
     screen_width = 1100
     screen_height = 700
-    display = pygame.Surface((300,200))
 
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Time-waits-for-no-one')
 
-
     animation = []
-
     for i in range(1,10):
             st = pygame.image.load(f'sprites/earthquake/street{i%3 + 1}.png')
             animation.append(st)
     for i in range(1,13):
         er = pygame.image.load(f'sprites/earthquake/earthquake{i}.png')
         animation.append(er)
-    # Load the "co" image
-    co = pygame.image.load('sprites/earthquake/street.png')
 
+    # Load the "co" image
+    comment = pygame.image.load('sprites/earthquake/street.png')
 
     # Create a font object
     font = pygame.font.Font("fonts/superfont.ttf", 22)  # Adjust the font and size as needed
 
     # Render the text onto a surface
-    text_surface = font.render("Shaking. Gap. Darkness. Lucy falls into the pit.", True, (255, 255, 255))  # Adjust text and color as needed
+    text_surface = font.render("Shaking. Gap. Darkness. Julia falls into the pit.", True, (255, 255, 255))  # Adjust text and color as needed
 
     # Blit the text surface onto your image at the desired position
     text_position = (175, 575)  # Adjust the position as needed
-    co.blit(text_surface, text_position)
 
     # Display the image
-    screen = pygame.display.set_mode(co.get_size())
-    screen.blit(co, (0, 0))
     pygame.display.flip()
-    animation.append(co)
-
-
-
+    animation.append(comment)
 
     # scrolling 
     scroll_th= 200
@@ -182,15 +173,12 @@ def play(timer_text):
                     game_over = -1
                     de.play()
             
-
-    # update player coordinates with scrolling adjustment
+            # update player coordinates with scrolling adjustment
             self.rect.x += dx
             self.rect.y += dy 
             
-
             # Draw player onto screen with scrolling adjustment
             screen.blit(self.image, (self.rect.x - scroll[0], self.rect.y - scroll[1]))
-            
             
             return game_over
 
@@ -246,13 +234,13 @@ def play(timer_text):
                     if tile == 9:
                         exit = Exit(col_count * tile_size, row_count * tile_size - (tile_size // 2))
                         exit_group.add(exit)
-                    if tile==3:
+                    if tile == 3:
                         lave=lava(col_count*(tile_size-scroll[0]),row_count*(tile_size-scroll[1]) )
                         lava_group.add(lave)
                     
-                    
                     col_count += 1
                 row_count += 1
+
         def update(self):
             # Move the grass tiles left and right
             for grass in self.grass_tiles:
@@ -337,7 +325,7 @@ def play(timer_text):
         [4, 4, 4, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 8, 8, 4, 4, 4, 0 ,0, 0, 9, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 0, 4, 4, 0, 8, 8, 0, 0, 0, 0,0, 0, 0, 2, 2, 0, 0, 0, 0 ,4, 4, 1, 4, 0, 0],
         [0, 0, 0, 0, 0, 0, 4, 4, 0 ,0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0,0, 8, 8, 7, 0, 0, 0, 0, 0 ,8, 0, 0, 0, 0, 4],
-        [0, 0, 0, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 2, 2, 0, 0,0, 4, 4, 4, 0, 0, 0, 4, 4 ,4, 0, 0, 0, 4, 0],
+        [0, 0, 0, 4, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 2, 2, 0, 0,0, 0, 4, 4, 0, 0, 0, 4, 4 ,4, 0, 0, 0, 4, 0],
         [0, 4, 4, 0, 0, 0, 0, 0, 0 ,0, 0, 4, 4, 0, 0, 0, 4, 4, 0, 0, 0, 1, 1, 0, 0, 0, 0, 4, 0,4, 0, 4, 4, 4, 4, 0, 0, 2 ,0, 4, 4, 4, 0, 0],
         [0, 7, 7, 0, 0, 0, 7, 8, 4 ,4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 8, 7, 8, 0, 0, 0, 7, 7, 7, 4,0, 8, 7, 7, 0, 0, 0, 0, 2 ,2, 0, 0, 0, 0, 0],
         [0, 4, 4, 0, 0, 0, 4, 4, 0 ,0, 8, 8, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 8, 8, 0, 4, 4, 4, 0, 0, 4, 4, 4, 0, 0, 7, 0, 0 ,0, 0, 0, 0, 0, 0],
@@ -345,8 +333,6 @@ def play(timer_text):
         [0, 0, 0, 0, 0, 4, 4, 0, 0 ,0, 0, 4, 4, 0, 0, 0, 0, 0, 4, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 4, 4, 4, 0, 0, 0 ,4, 0, 4, 0, 0, 0],
         [0, 12,12 ,12, 0, 0, 0, 4, 0 ,4, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0 ,2, 2, 2, 0, 0, 0], 
         [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ,3 ,3 , 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,3] 
-        
-        
     ]
 
     player = Player(100, screen_height - 130)
@@ -362,9 +348,12 @@ def play(timer_text):
     clock = pygame.time.Clock()  # Create a clock object to control frame rate
 
 
-    lose_screem2=pygame.image.load("sprites/earthquake/burnedch.png")
     lose_screem1=pygame.image.load("sprites/earthquake/burned .png")
+    lose_screem2=pygame.image.load("sprites/earthquake/burnedch.png")
     lose_screem3=pygame.image.load("sprites/earthquake/yourelateloss.png")
+    late_screen1 = pygame.image.load("sprites/final/lose.png")
+    late_screen2 = pygame.image.load("sprites/final/losech.png")
+    late_screen3 = pygame.image.load("sprites/main/yourelateloss.png")
 
 
     background_image = pygame.image.load("sprites/earthquake/lavabg.png")
@@ -378,10 +367,7 @@ def play(timer_text):
 
     #skip and dark 
     skip = pygame.image.load("sprites/earthquake/skip.png")
-    skip_rect =skip.get_rect(topleft = (900, 600))
-
-
-
+    skip_rect = skip.get_rect(topleft = (950, 0))
 
 
     # Add these variables before the game loop
@@ -395,11 +381,12 @@ def play(timer_text):
     #curscene
     cutscene = True
     eart_sound_played = False
-
+    text_shown = False
 
     start_time = datetime.strptime(timer_text, "%H:%M")
     add_minute = True
     run = True
+    late_screen = False
     # Inside the game loop
     while run:
         if cutscene:
@@ -407,7 +394,7 @@ def play(timer_text):
                 if event.type == TIMER:
                     timer += 1
                 if event.type == pygame.QUIT:
-                    pass
+                    return None, timer_text
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
 
@@ -420,14 +407,21 @@ def play(timer_text):
                 earthqu.play()  # Play the eart sound
                 eart_sound_played = True 
             if timer < 22:
-                screen.blit(animation[timer], (0, 0))   
-                screen.blit(skip, (900, 600))
-                
-
-                
-        
-        
-            screen.blit(skip, (900, 600))
+                screen.blit(animation[timer], (0, 0))
+            else:
+                if not text_shown:
+                    screen.blit(text_surface, text_position)
+                    text_shown = True
+            screen.blit(skip, (950, 0))
+            pygame.display.update()
+        elif late_screen:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    return None, timer_text
+            bgsound.stop()
+            screen.blit(late_screen1, (0, 0))
+            screen.blit(late_screen2, (0, 200))
+            screen.blit(late_screen3 , (380, 150))
             pygame.display.update()
         else:
             for event in pygame.event.get():
@@ -502,6 +496,7 @@ def play(timer_text):
 
             # Update and draw coins and enemies
             if game_over == -1:
+                bgsound.stop()
                 screen.blit(lose_screem1, (0, 0))
                 screen.blit(lose_screem2, (0, 200))
                 screen.blit(lose_screem3 , (380,150))
@@ -519,7 +514,8 @@ def play(timer_text):
                 screen.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
 
             # End game if time runs out
-            
+            if timer_text == '09:00':
+                late_screen = True
                 
                 
             pygame.display.update()

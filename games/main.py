@@ -6,6 +6,7 @@ pygame.init()
 pygame.mixer.init()
 pygame.mixer.music.load('sound/main/mainminus.wav')
 pygame.mixer.music.play(-1)
+alarm = pygame.mixer.Sound('sound/other/alarmclock.wav')
 
 # Set up the display
 WIDTH, HEIGHT = 1100, 700
@@ -23,8 +24,8 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
 # Win screen 
-win_screen1 = pygame.image.load("sprites/final/winch.png")
-win_screen2 = pygame.image.load("sprites/final/win.png")
+win_screen1 = pygame.image.load("sprites/final/win.png")
+win_screen2 = pygame.image.load("sprites/final/winch.png")
 win_screen3 = pygame.image.load("sprites/main/youmadeitwin.png")
 
 background = pygame.image.load("sprites/main/room/room1.png")
@@ -42,7 +43,7 @@ logo_sprite = pygame.transform.scale(logo_sprite, (450, 450))
 skip = pygame.image.load("sprites/main/skip.png")
 skip_rect = skip.get_rect(topleft = (900, 600))
 
-clocks = [906, '906-2', 906, 905, 905, 905, 904, 904, 904, 903, 903, 902, 902, 901, 901, 900, 858, 856, 854, 852, 850, 848, 846, 844, 842, 840, 839, 838, 837, 836, 836, 835, 835, 834, 834, 833, 833, 833, 832, 832, 832, 831, 831, 831, 830, '830-2', 830]
+clocks = [906, '906-2', 906, 905, 905, 905, 904, 904, 904, 903, 903, 902, 902, 901, 901, 900, 858, 856, 854, 852, 850, 848, 846, 844, 842, 840, 839, 838, 837, 836, 836, 835, 835, 834, 834, 833, 833, 833, 832, 832, 832, 831, 831, 831, 830, '830-2', 830, '830-2', 830, '830-2', 830, '830-2', 830, '830-2', 830]
 animation = []
 for clock_value in clocks:
     filename = f"sprites/clock/{clock_value}.png"
@@ -99,21 +100,46 @@ class Menu:
         return None
 
 def back_in_time(timer):
+    alarm_played = False
     while True:    
         for event in pygame.event.get():  
-            if event.type == TIMER:
-                timer += 1
             if event.type == pygame.QUIT:
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 # Check if the mouse click is within the back button
                 if skip_rect.collidepoint(pos):
+                    alarm.stop()
+                    play_music() 
                     return
         if timer < len(clocks):
                 screen.blit(animation[timer], (0, 0))
+        else:
+            if not alarm_played:  # Check if alarm has not been played yet
+                play_alarm()
+                pygame.mixer.music.load('sound/main/mainminus.wav')
+                alarm_played = True
         screen.blit(skip, (900, 600))
         pygame.display.update()
+
+def win_screen():
+    while True:
+        for event in pygame.event.get():  
+            if event.type == pygame.QUIT:
+                return
+        screen.blit(win_screen1, (0, 0))
+        screen.blit(win_screen2, (0, 200))
+        screen.blit(win_screen3, (0, 200)) #win screen
+        pygame.display.update()
+
+def play_music():
+    pygame.mixer.music.load('sound/main/mainminus.wav')
+    pygame.mixer.music.play(-1)
+    # pygame.mixer.music.set_volume()
+
+def play_alarm():
+    alarm = pygame.mixer.Sound('sound/other/alarmclock.wav').play()
+
 
 timer = 0
 TIMER = pygame.USEREVENT + 1
@@ -125,7 +151,6 @@ def main_menu():
     global win1
     menu = Menu()
     running = True
-
     while running:
         if pygame.display.get_init():  # Check if Pygame display is initialized
             screen.blit(background, (0, 0))
@@ -138,8 +163,9 @@ def main_menu():
             if event.type == pygame.QUIT:
                 running = False
             action = menu.handle_event(event)
-            if action:
+            if action == 1:
                 pygame.mixer.music.pause()
+                pygame.mixer.music.rewind()
             else:
                 pygame.mixer.music.unpause()
             if action == 1:
@@ -148,19 +174,29 @@ def main_menu():
                     win1, timer_text = bus.play()
                 elif chose == 2:
                     win1, timer_text = maze.play()
+                else:
+                    win1 = None
 
-                if win1:
+                if win1 == True:
                     win2, timer_text = earthquake.play(timer_text)
                     if win2:
-                        win3 = alien.play(timer_text)
+                        win3, timer_text = alien.play(timer_text)
                         if win3:
-                            screen.blit(win_screen1, (0, 0))
-                            screen.blit(win_screen2, (0, 200))
-                            screen.blit(win_screen3, (0, 200)) #win screen
+                            win_screen()
+                            continue
+                        elif win3 == None:
+                            play_music()
+                            continue
                         else:
                             back_in_time(timer)
+                    elif win2 == None:
+                        play_music()
+                        continue
                     else:
                         back_in_time(timer)
+                elif win1 == None:
+                    play_music()
+                    continue
                 else:
                     back_in_time(timer)
                     
