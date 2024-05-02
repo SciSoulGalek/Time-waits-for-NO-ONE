@@ -132,8 +132,8 @@ def back_in_time(timer):
                 screen.blit(animation[timer], (0, 0))
         else:
             if not alarm_played:  # Check if alarm has not been played yet
-                if timer - len(clocks) < len(clocks2):
-                    screen.blit(animation2[timer - len(clocks)], (0, 0))
+                if (timer - 44) < len(clocks2):
+                    screen.blit(animation2[timer - 44], (0, 0))
                 play_alarm()
                 pygame.mixer.music.load('sound/main/mainminus.wav')
                 alarm_played = True
