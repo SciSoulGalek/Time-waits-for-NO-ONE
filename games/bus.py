@@ -31,7 +31,7 @@ def play():
             self.sub_time = False  # Variable to track whether to add or subtract time
 
         def move(self, dx, dy):
-            speed = 1
+            speed = 2
             if dx != 0:
                 self.move_single_axis(dx * speed, 0)
             if dy != 0:
@@ -77,18 +77,37 @@ def play():
             screen.blit(rotated_image, self.rect.move(camera_offset))
 
     class Bus:
-        def __init__(self, x, y):
-            self.image = pygame.Surface((100, 50))
-            self.image.fill(BLUE)
+        def __init__(self, x, y, max_distance, stop_duration):
+            self.image = pygame.image.load('sprites/bus/bus.png')
+            self.image = pygame.transform.scale(self.image, (300, 80))
             self.rect = self.image.get_rect()
             self.rect.topleft = (x, y)
-            self.speed = 2
+            self.speed = 4
+            self.max_distance = max_distance
+            self.stop_duration = stop_duration
+            self.distance_traveled = 0
+            self.stop_timer = 0
 
-        def move(self):
-            self.rect.move_ip(self.speed, 0)
+        def move(self, player_rect):
+            distance_x = self.rect.x - player_rect.x
+            distance_y = abs(self.rect.y - player_rect.y)
+
+            if distance_y <= 140 and distance_x > -210 and distance_x < 0:
+                print("Catched")
+            else:
+                if distance_x < self.max_distance and self.stop_timer <= 1:
+                    self.rect.x += self.speed
+                    self.distance_traveled += self.speed
+                    if self.distance_traveled > 1100:
+                        self.stop_timer = self.stop_duration
+                        self.distance_traveled = 0
+
+            if self.stop_timer > 0:
+                self.stop_timer -= 1
 
         def draw(self, screen, camera_offset):
             screen.blit(self.image, self.rect.move(camera_offset))
+        
 
     class Obstacle:
         def __init__(self, x, y):
@@ -128,8 +147,8 @@ def play():
         def draw(self, screen, camera_offset):
             screen.blit(self.image, self.rect.move(camera_offset))
 
-    # Create player and bus
-    bus = Bus(SCREEN_WIDTH // 2, 0)
+    # Create bus
+    bus = Bus(SCREEN_WIDTH // 2 - 150, 25, 1100, 120)
 
     # Obstacles (People)
     obstacles = []
@@ -140,89 +159,91 @@ def play():
     keys = []
     walls = [] 
     player = Player() 
-    level =  [
-    "                                                       ",
-    "                                                       ",
-    "WWWWWWWWWWWWWWWWWWWWWWWWWW   WWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "W                                                     W",
-    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
-    ]
     
-    levels = []
-    for i in range(0, 15):
-        levels.append(level)
+    # Define the regions where blocks can appear (in this case, a strip in the middle of the level)
+    key_region_start = 16
+    key_region_end = 30
 
-    # Parse the level string above. W = wall, E = exit
-    x = y = 0
-    dx = 0
-    for level in levels:
-        for row in level:
-            for col in row:
-                if col == "W":
-                    Wall((x, y))
-                x += 20 + dx
-            y += 20
-            x = 0 + dx
-        dx += 1100 
-        
+    # Define the regions where blocks can appear (in this case, a strip in the middle of the level)
+    block_region_start = 16
+    block_region_end = 30
+
     # Determine the number of keys of each type
     num_gold_keys = 3
     num_silver_keys = 3
-
-    # Keep track of available positions to place keys
+    
+    # Keep track of available positions to place blocks
     available_positions = []
-
-    # Iterate through the level to find available positions
-    for level in levels:
+    
+    for level_index in range(15):
+        level = [
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                   WWWWWWWWWWWWWWWWW                   ",
+        "                   W               W                   ",
+        "                   W               W                   ",
+        "                   W               W                   ",
+        "                   W               W                   ",
+        "                   W               W                   ",
+        "                   W               W                   ",
+        "                   W               W                   ",
+        "WWWWWWWWWWWWWWWWWWWW               WWWWWWWWWWWWWWWWWWWW",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "                                                       ",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "W                                                     W",
+        "W                                                     W",
+        "W                                                     W",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+    
+        x_offset = level_index * len(level[0]) * 20  # Calculate the x-offset for each level
         for y, row in enumerate(level):
             for x, col in enumerate(row):
-                if col == ' ':
-                    available_positions.append((x * 20, y * 20))  # Convert grid position to pixel position
+                if col == "W":
+                    Wall((x * 20 + x_offset, y * 20))
+                if col == ' ' and block_region_start <= y < block_region_end:
+                    available_positions.append((x * 20 + x_offset, y * 20))  # Convert grid position to pixel position
+    
+        # Shuffle the available positions
+        random.shuffle(available_positions)
 
-    # Shuffle the available positions
-    random.shuffle(available_positions)
+        # Create blocks at randomly selected positions within the central side region
+        for _ in range(20):  # Adjust the number of blocks as needed
+            if available_positions:
+                pos = available_positions.pop()
+                print(f"Creating block at position {pos}")
+                # Create block at pos
+                Wall(pos)
 
-    # Create gold keys
-    for _ in range(num_gold_keys):
-        if available_positions:
-            pos = available_positions.pop()
-            keys.append(Key(pos, 'greenapple'))
+        # Create gold keys
+        for _ in range(num_gold_keys):
+            if available_positions:
+                pos = available_positions.pop()
+                keys.append(Key(pos, 'greenapple'))
 
-    # Create silver keys
-    for _ in range(num_silver_keys):
-        if available_positions:
-            pos = available_positions.pop()
-            keys.append(Key(pos, 'redapple'))
+        # Create silver keys
+        for _ in range(num_silver_keys):
+            if available_positions:
+                pos = available_positions.pop()
+                keys.append(Key(pos, 'redapple'))
 
     # Camera
     camera_offset = [0, 0]
@@ -264,12 +285,12 @@ def play():
         camera_offset[0] = -(player.rect.centerx - SCREEN_WIDTH // 2)
     
         # Move the bus
-        bus.move()
+        bus.move(player.rect)
 
         # Update obstacles
         if obstacle_counter % obstacle_spawn_rate == 0:
-            spawn_x = SCREEN_WIDTH + random.randint(0, 200)
-            spawn_y = random.randint(0, SCREEN_HEIGHT)
+            spawn_x = SCREEN_WIDTH + player.rect.x + random.randint(0, 200)
+            spawn_y = random.randint(320, 600)
             obstacles.append(Obstacle(spawn_x, spawn_y))
         obstacle_counter += 1
 
