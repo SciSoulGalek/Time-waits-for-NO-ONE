@@ -155,6 +155,8 @@ def play(timer_text):
     running = True
     add_minute = True
     result = False
+    changed = False
+
     bgsound.play()
     while running:
         if cutscene:
@@ -252,8 +254,10 @@ def play(timer_text):
 
 
             # Used to get rid of the first question timer bug
-            if current_question_index == 0:
-                elapsed_ticks_time = 0
+            if not changed:
+                if current_question_index == 0:
+                    elapsed_ticks_time = 0
+                changed = True
             
             remaining_time = max(0, QUESTION_DURATION - elapsed_ticks_time)
             

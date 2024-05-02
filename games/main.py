@@ -141,14 +141,17 @@ def back_in_time(timer):
         pygame.display.update()
 
 def win_screen():
-    while True:
+    winning = True
+    while winning:
         for event in pygame.event.get():  
             if event.type == pygame.QUIT:
-                return
+                winning = False
         screen.blit(win_screen1, (0, 0))
         screen.blit(win_screen2, (0, 200))
         screen.blit(win_screen3, (0, 200)) #win screen
         pygame.display.update()
+    play_music()
+    return
 
 def play_music():
     pygame.mixer.music.load('sound/main/mainminus.wav')
