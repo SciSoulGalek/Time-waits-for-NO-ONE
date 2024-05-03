@@ -350,7 +350,10 @@ def play(timer_text):
 
 
     background_image = pygame.image.load("sprites/earthquake/lavabg.png")
+    ufo_image = pygame.image.load("sprites/earthquake/ufo.png")
     background_image = pygame.transform.scale(background_image, (1100, 700))
+
+    font = pygame.font.SysFont(None, 36)  # Define font for the timer
 
     #buttoms 
     exit_img=pygame.image.load("sprites/earthquake/door.png")
@@ -389,7 +392,7 @@ def play(timer_text):
                 if event.type == TIMER:
                     timer += 1
                 if event.type == pygame.QUIT:
-                    return None, timer_text
+                    return False, timer_text
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     # Check if the mouse click is within the back button
@@ -434,6 +437,7 @@ def play(timer_text):
 
             # Clear the screen
             screen.blit(background_image, (0, 0))
+            screen.blit(ufo_image,(0,0))
             
             # Update player
             game_over = player.update(game_over)
@@ -519,8 +523,7 @@ def play(timer_text):
             pygame.display.update()
             clock.tick(fps)  # Limit frame rate to 30 frames per second
     bgsound.stop()
-    return (None, timer_text)
-
+    return (False, timer_text)
 
 
 
