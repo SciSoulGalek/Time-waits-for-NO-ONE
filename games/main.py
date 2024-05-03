@@ -159,7 +159,7 @@ def play_music():
     # pygame.mixer.music.set_volume()
 
 def play_alarm():
-    alarm = pygame.mixer.Sound('sound/other/alarmclock.wav').play()
+    alarm.play()
 
 timer = 0
 TIMER = pygame.USEREVENT + 1
