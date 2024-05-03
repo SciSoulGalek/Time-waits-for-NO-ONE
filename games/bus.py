@@ -39,30 +39,9 @@ def play():
         def __init__(self):
             super().__init__()
             self.rect = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 40, 40)
-            self.images = {
-                'up': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 180),
-                       pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 180),
-                       pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 180)],
-                'down': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 0),
-                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 0),
-                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 0)],
-                'left': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 270),
-                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 270),
-                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 270)],
-                'right': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 90),
-                          pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 90),
-                          pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 90)],
-                'static': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 180),
-                           pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 0),
-                           pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 90),
-                           pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 270)]
-            }
-            self.image = self.images['static'][0]
-            self.direction = 'static'
-            self.frame = 0  # Frame index for animation
-            self.animation_speed = 10  # Speed of animation, lower is faster
-            self.animation_counter = 0  # Counter for animation speed
-
+            self.image = pygame.image.load("sprites/bus/Julia1.png") 
+            self.image = pygame.transform.scale(self.image, (40, 40))
+            self.direction = 'right'
             self.counter = 3
             self.add_time = False  # Variable to track whether to add or subtract time
             self.sub_time = False  # Variable to track whether to add or subtract time
@@ -75,37 +54,43 @@ def play():
                 self.move_single_axis(0, dy * speed)
 
         def move_single_axis(self, dx, dy):
+        
             self.rect.x += dx
             self.rect.y += dy
-
+    
             for wall in walls:
                 if self.rect.colliderect(wall.rect):
-                    if dx > 0:
+                    if dx > 0: # Moving right; Hit the left side of the wall
                         self.rect.right = wall.rect.left
-                    if dx < 0:
+                    if dx < 0: # Moving left; Hit the right side of the wall
                         self.rect.left = wall.rect.right
-                    if dy > 0:
+                    if dy > 0: # Moving down; Hit the top side of the wall
                         self.rect.bottom = wall.rect.top
-                    if dy < 0:
+                    if dy < 0: # Moving up; Hit the bottom side of the wall
                         self.rect.top = wall.rect.bottom
 
-        def update_image(self, direction):
-            if direction != self.direction:
-                if direction in self.images:
-                    self.image = self.images[direction][0]
-                    self.direction = direction
-                    self.frame = 0
+            for person in people:
+                if self.rect.colliderect(person.rect):
+                    if dx > 0:
+                        self.rect.right = person.rect.left
+                    if dx < 0:
+                        self.rect.left = person.rect.right
+                    if dy > 0: 
+                        self.rect.bottom = person.rect.top
+                    if dy < 0:
+                        self.rect.top = person.rect.bottom
 
         def draw(self, screen, camera_offset):
-            # Update animation
-            self.animation_counter += 1
-            if self.animation_counter >= self.animation_speed:
-                self.frame = (self.frame + 1) % len(self.images[self.direction])
-                self.image = self.images[self.direction][self.frame]
-                self.animation_counter = 0
+            if self.direction == 'left':
+                rotated_image = pygame.transform.rotate(self.image, 90)
+            elif self.direction == 'right':
+                rotated_image = pygame.transform.rotate(self.image, -90)
+            elif self.direction == 'down':
+                rotated_image = pygame.transform.rotate(self.image, 180)
+            else:
+                rotated_image = self.image
 
-            screen.blit(self.image, self.rect.move(camera_offset))
-
+            screen.blit(rotated_image, self.rect.move(camera_offset))
 
     class Bus:
         def __init__(self, x, y, max_distance, stop_duration):
@@ -159,10 +144,10 @@ def play():
     class People(pygame.sprite.Sprite):
         def __init__(self, pos):
             super().__init__()
-            self.rect = pygame.Rect(pos[0], pos[1], 50, 50)
+            self.rect = pygame.Rect(pos[0], pos[1], 40, 40)
             self.image = pygame.image.load(f"sprites/bus/челик{random.randint(2, 3)}.png")
             self.image = pygame.transform.rotate(self.image, 90 * random.randint(0, 3))
-            self.image = pygame.transform.scale(self.image, (50, 50))
+            self.image = pygame.transform.scale(self.image, (40, 40))
 
         def draw(self, screen, camera_offset):
             screen.blit(self.image, self.rect.move(camera_offset))
@@ -181,12 +166,12 @@ def play():
 
         def __init__(self, pos, key_type):
             super().__init__()
-            self.rect = pygame.Rect(pos[0], pos[1], 20, 20)
+            self.rect = pygame.Rect(pos[0], pos[1], 30, 30)
             if key_type == 'greenapple':
                 self.image = pygame.image.load("sprites/bus/greenapple.png")
             elif key_type == 'redapple':
                 self.image = pygame.image.load("sprites/bus/redapple.png")
-            self.image = pygame.transform.scale(self.image, (20, 20))
+            self.image = pygame.transform.scale(self.image, (30, 30))
             self.key_type = key_type
         def draw(self, screen, camera_offset):
             screen.blit(self.image, self.rect.move(camera_offset))
@@ -208,11 +193,11 @@ def play():
     
     # Define the regions where blocks can appear (in this case, a strip in the middle of the level)
     block_region_start = 19
-    block_region_end = 31
+    block_region_end = 30
 
     # Determine the number of keys of each type
-    num_gold_keys = 3
-    num_silver_keys = 3
+    num_gold_keys = 9
+    num_silver_keys = 9
     
     # Keep track of available positions to place blocks
     
@@ -253,7 +238,7 @@ def play():
         "                                                                                                                                                                     ",
         "                                                                                                                                                                     ",
         "                                                                                                                                                                     ",
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
         "                                                                                                                                                                     ",
         "                                                                                                                                                                     ",
         "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
@@ -271,7 +256,7 @@ def play():
         random.shuffle(available_positions)
 
         # Create blocks at randomly selected positions within the central side region
-        for _ in range(10):  # Adjust the number of blocks as needed
+        for _ in range(30):  # Adjust the number of blocks as needed
             if available_positions:
                 pos = available_positions.pop()
                 # Create block at pos
@@ -331,16 +316,16 @@ def play():
             key = pygame.key.get_pressed()
             if key[K_UP] and knockback_timer <= 0 and player.rect.top > 0:
                 player.move(0, -2)
-                player.update_image('up')
+                player.direction = 'up'
             if key[K_DOWN] and knockback_timer <= 0 and player.rect.bottom < SCREEN_HEIGHT:
                 player.move(0, 2)
-                player.update_image('down')
+                player.direction = 'down'
             if key[K_LEFT] and knockback_timer <= 0:
                 player.move(-2, 0)
-                player.update_image('left')
+                player.direction = 'left'
             if key[K_RIGHT] and knockback_timer <= 0:
                 player.move(2, 0)
-                player.update_image('right')
+                player.direction = 'right'
 
             for key in keys:
                 if player.rect.colliderect(key.rect):
