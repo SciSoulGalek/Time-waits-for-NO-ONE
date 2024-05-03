@@ -6,7 +6,7 @@ def activate(darkness_number):
     WIDTH, HEIGHT = 1100, 700
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Choose a game!")
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font("fonts/superfont.ttf", 25)
 
     background = pygame.image.load("sprites/main/room/room1.png")
 
@@ -74,7 +74,7 @@ def activate(darkness_number):
 
             else:
                 # Draw overlay on top
-                something = 'Oh no, i overslept'
+                something = 'Oh Holy Moly, i overslept'
                 something_surface = font.render(something, True, 'white')
                 screen.blit(something_surface, (200, 550))
                 screen.blit(skip, (950, 0))
