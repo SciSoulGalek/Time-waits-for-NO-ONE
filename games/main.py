@@ -7,6 +7,8 @@ pygame.mixer.init()
 pygame.mixer.music.load('sound/main/mainminus.wav')
 pygame.mixer.music.play(-1)
 alarm = pygame.mixer.Sound('sound/other/alarmclock.wav')
+elapse=pygame.mixer.Sound('sound/main/time.mp3')
+win=pygame.mixer.Sound('sound/main/win.mp3')
 volume = 1
 
 # Set up the display
@@ -30,10 +32,15 @@ win_screen2 = pygame.image.load("sprites/final/winch.png")
 win_screen3 = pygame.image.load("sprites/main/youmadeitwin.png")
 
 background = pygame.image.load("sprites/main/room/room1.png")
+earthback=pygame.image.load("sprites/earthquake/street1.png")
+#lose sound 
+lose_sound= pygame.mixer.Sound("sound/main/losesound.mp3")
+
+
 
 # Create a font object
 font = pygame.font.Font("fonts/superfont.ttf", 22)  # Adjust the font and size as needed
-font_big = pygame.font.Font(None, 190)  # Adjust the font and size as needed
+font_big = pygame.font.Font("fonts/superfont.ttf", 70)  # Adjust the font and size as needed
 
 button_size = (225, 75)
 main_menu_button = pygame.image.load("sprites/choose_menu/main_menu.png")
@@ -113,8 +120,9 @@ class Menu:
                     return button.action
         return None
 
-def back_in_time(timer):
+def back_in_time(timer): 
     alarm_played = False
+    elapse.play(-1)
     while True:    
         for event in pygame.event.get():  
             if event.type == TIMER:
@@ -127,13 +135,16 @@ def back_in_time(timer):
                 if skip_rect.collidepoint(pos):
                     alarm.stop()
                     play_music() 
+                    elapse.stop()
                     return
         if timer < len(clocks):
                 screen.blit(animation[timer], (0, 0))
         else:
+            
             if not alarm_played:  # Check if alarm has not been played yet
+                elapse.stop()
                 if (timer - 44) < len(clocks2):
-                    screen.blit(animation2[timer - 44], (0, 0))
+                    screen.blit(animation2[timer - 44], (0, 0))    
                 play_alarm()
                 pygame.mixer.music.load('sound/main/mainminus.wav')
                 alarm_played = True
@@ -141,11 +152,14 @@ def back_in_time(timer):
         pygame.display.update()
 
 def win_screen():
+    win.play()
     winning = True
     while winning:
         for event in pygame.event.get():  
             if event.type == pygame.QUIT:
                 winning = False
+                win.stop()
+            
         screen.blit(win_screen1, (0, 0))
         screen.blit(win_screen2, (0, 200))
         screen.blit(win_screen3, (0, 200)) #win screen
@@ -255,7 +269,7 @@ def options_menu():
         screen.blit(dark_overlay, (0, 0))
         # Draw overlay on top
         volume_text = font_big.render(f'Volume: {int(volume * 100)}', True, (255, 255, 255)) 
-        screen.blit(volume_text, (200, HEIGHT // 2))
+        screen.blit(volume_text, (200,HEIGHT//2))
         screen.blit(main_menu_button, (50, 50))
         pygame.display.update()
 
