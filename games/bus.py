@@ -19,6 +19,17 @@ def play():
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
 
+    bus_stop = pygame.image.load("sprites/bus/bus_stop.png")
+    bus_stop = pygame.transform.scale(bus_stop, (1100, 700))
+    bus_stop_roof = pygame.image.load("sprites/bus/bus_stop_roof.png")
+    bus_stop_roof = pygame.transform.scale(bus_stop_roof, (1100, 700))
+    road = pygame.image.load("sprites/bus/road.png")
+    road = pygame.transform.scale(road, (1100, 700))
+    road2 = pygame.image.load("sprites/bus/road2.png")
+    road2 = pygame.transform.scale(road2, (1100, 700))
+
+
+
     lose_screen1 = pygame.image.load("sprites/final/lose.png")
     lose_screen2 = pygame.image.load("sprites/final/losech.png")
     lose_screen3 = pygame.image.load("sprites/main/yourelateloss.png")
@@ -94,7 +105,7 @@ def play():
                 if distance_x < self.max_distance and self.stop_timer <= 1:
                     self.rect.x += self.speed
                     self.distance_traveled += self.speed
-                    if self.distance_traveled > 1100:
+                    if self.distance_traveled > 2200:
                         self.stop_timer = self.stop_duration
                         self.distance_traveled = 0
 
@@ -158,8 +169,8 @@ def play():
     player = Player() 
     
     # Define the regions where blocks can appear (in this case, a strip in the middle of the level)
-    block_region_start = 16
-    block_region_end = 30
+    block_region_start = 19
+    block_region_end = 31
 
     # Determine the number of keys of each type
     num_gold_keys = 3
@@ -173,41 +184,41 @@ def play():
     for level_index in range(15):
         available_positions = []
         level = [
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                   WWWWWWWWWWWWWWWWW                   ",
-        "                   W               W                   ",
-        "                   W               W                   ",
-        "                   W               W                   ",
-        "                   W               W                   ",
-        "                   W               W                   ",
-        "                   W               W                   ",
-        "                   W               W                   ",
-        "WWWWWWWWWWWWWWWWWWWW               WWWWWWWWWWWWWWWWWWWW",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "                                                       ",
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-        "W                                                     W",
-        "W                                                     W",
-        "W                                                     W",
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                   WWWWWWWWWWWWWWWWW                                                                          ",
+        "                   W               W                                                                          ",
+        "                   W               W                                                                          ",
+        "                   W               W                                                                          ",
+        "                   W               W                                                                          ",
+        "                   W               W                                                                          ",
+        "WWWWWWWWWWWWWWWWWWWW               WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "                                                                                                              ",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "W                                                                                                            W",
+        "W                                                                                                            W",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
         ]
     
         x_offset = level_index * len(level[0]) * 20  # Calculate the x-offset for each level
@@ -225,7 +236,6 @@ def play():
         for _ in range(10):  # Adjust the number of blocks as needed
             if available_positions:
                 pos = available_positions.pop()
-                print(f"Creating block at position {pos}")
                 # Create block at pos
                 Wall(pos)
 
@@ -316,7 +326,7 @@ def play():
             # Update obstacles
             if obstacle_counter % obstacle_spawn_rate == 0:
                 spawn_x = SCREEN_WIDTH + player.rect.x + random.randint(0, 200)
-                spawn_y = random.randint(320, 600)
+                spawn_y = random.randint(380, 620)
                 obstacles.append(Obstacle(spawn_x, spawn_y))
             obstacle_counter += 1
 
@@ -337,7 +347,10 @@ def play():
                 knockback_timer -= 1
 
             # Draw everything
-            screen.fill(WHITE)
+            screen.fill(WHITE)            
+            screen.blit(bus_stop, (camera_offset[0], camera_offset[1]))
+            screen.blit(road, (camera_offset[0] + 1100, camera_offset[1]))
+            screen.blit(road2, (camera_offset[0] + 2200, camera_offset[1]))
 
             for wall in walls:
                 wall.draw(screen, camera_offset)
