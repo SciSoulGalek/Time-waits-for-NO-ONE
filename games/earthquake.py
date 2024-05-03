@@ -9,7 +9,6 @@ def play(timer_text):
 
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Time-waits-for-no-one')
-
     animation = []
     for i in range(1,10):
             st = pygame.image.load(f'sprites/earthquake/street{i%3 + 1}.png')
@@ -20,15 +19,9 @@ def play(timer_text):
 
     # Load the "co" image
     comment = pygame.image.load('sprites/earthquake/street.png')
-
-    # Create a font object
-    font = pygame.font.Font("fonts/superfont.ttf", 22)  # Adjust the font and size as needed
-
-    # Render the text onto a surface
+    font = pygame.font.Font("fonts/superfont.ttf", 19)  # Adjust the font and size as needed
     text_surface = font.render("Shaking. Gap. Darkness. Julia falls into the pit.", True, (255, 255, 255))  # Adjust text and color as needed
-
-    # Blit the text surface onto your image at the desired position
-    text_position = (175, 575)  # Adjust the position as needed
+    text_position = (150, 575)  # Adjust the position as needed
 
     # Display the image
     pygame.display.flip()
@@ -388,6 +381,9 @@ def play(timer_text):
     run = True
     late_screen = False
     lose_screen = False
+
+  
+
     # Inside the game loop
     while run:
         if cutscene:
@@ -406,6 +402,7 @@ def play(timer_text):
             if not eart_sound_played:
                 earthqu.play()  # Play the eart sound
                 eart_sound_played = True 
+
             if timer < 22:
                 screen.blit(animation[timer], (0, 0))
             else:
@@ -525,3 +522,10 @@ def play(timer_text):
             clock.tick(fps)  # Limit frame rate to 30 frames per second
     bgsound.stop()
     return (False, timer_text)
+
+
+
+
+                
+                
+     
