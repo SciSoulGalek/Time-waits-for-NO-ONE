@@ -47,7 +47,7 @@ def play():
             self.sub_time = False  # Variable to track whether to add or subtract time
 
         def move(self, dx, dy):
-            speed = 2
+            speed = 3
             if dx != 0:
                 self.move_single_axis(dx * speed, 0)
             if dy != 0:
@@ -256,7 +256,7 @@ def play():
         random.shuffle(available_positions)
 
         # Create blocks at randomly selected positions within the central side region
-        for _ in range(30):  # Adjust the number of blocks as needed
+        for _ in range(20):  # Adjust the number of blocks as needed
             if available_positions:
                 pos = available_positions.pop()
                 # Create block at pos
