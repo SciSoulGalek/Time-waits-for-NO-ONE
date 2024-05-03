@@ -107,7 +107,7 @@ def play():
              self.image = pygame.image.load("sprites/maze/exit.png")      
 
 
-    font = pygame.font.SysFont('Aries', 40)
+    font = pygame.font.Font("fonts/superfont.ttf", 23)
     all_sprites_list = pygame.sprite.Group()
     
     pygame.display.set_caption("Find the way to KBTU")

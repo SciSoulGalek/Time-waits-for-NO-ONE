@@ -352,8 +352,6 @@ def play(timer_text):
     background_image = pygame.image.load("sprites/earthquake/lavabg.png")
     background_image = pygame.transform.scale(background_image, (1100, 700))
 
-    font = pygame.font.SysFont(None, 36)  # Define font for the timer
-
     #buttoms 
     exit_img=pygame.image.load("sprites/earthquake/door.png")
     exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
