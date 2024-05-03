@@ -371,13 +371,13 @@ def play():
 
             # Draw everything
             screen.fill(WHITE)
+            for wall in walls:
+                wall.draw(screen, camera_offset)
             for i in range(6):            
                 screen.blit(bus_stop, (camera_offset[0] + i * 3300, camera_offset[1]))
                 screen.blit(road, (camera_offset[0] + 1100 + i * 3300, camera_offset[1]))
                 screen.blit(road2, (camera_offset[0] - 1100 + i * 3300, camera_offset[1]))
 
-            for wall in walls:
-                wall.draw(screen, camera_offset)
             for person in people:
                 person.draw(screen, camera_offset)
             for key in keys:  
