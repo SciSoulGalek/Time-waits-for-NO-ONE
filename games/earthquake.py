@@ -389,7 +389,7 @@ def play(timer_text):
                 if event.type == TIMER:
                     timer += 1
                 if event.type == pygame.QUIT:
-                    return False, timer_text
+                    return None, timer_text
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     # Check if the mouse click is within the back button
@@ -519,7 +519,7 @@ def play(timer_text):
             pygame.display.update()
             clock.tick(fps)  # Limit frame rate to 30 frames per second
     bgsound.stop()
-    return (False, timer_text)
+    return (None, timer_text)
 
 
 

@@ -28,7 +28,7 @@ def play():
     road2 = pygame.image.load("sprites/bus/road2.png")
     road2 = pygame.transform.scale(road2, (1100, 700))
 
-
+    transport = ['scooter', 'scooter1', 'scooter2', 'moped', 'bicycle']
 
     lose_screen1 = pygame.image.load("sprites/final/lose.png")
     lose_screen2 = pygame.image.load("sprites/final/losech.png")
@@ -39,9 +39,30 @@ def play():
         def __init__(self):
             super().__init__()
             self.rect = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 40, 40)
-            self.image = pygame.image.load("sprites/maze/player.png") 
-            self.image = pygame.transform.scale(self.image, (40, 40))
-            self.direction = 'right'
+            self.images = {
+                'up': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 180),
+                       pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 180),
+                       pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 180)],
+                'down': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 0),
+                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 0),
+                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 0)],
+                'left': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 270),
+                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 270),
+                         pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 270)],
+                'right': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 90),
+                          pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia2.png"), (40, 40)), 90),
+                          pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia3.png"), (40, 40)), 90)],
+                'static': [pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 180),
+                           pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 0),
+                           pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 90),
+                           pygame.transform.rotate(pygame.transform.scale(pygame.image.load("sprites/bus/Julia1.png"), (40, 40)), 270)]
+            }
+            self.image = self.images['static'][0]
+            self.direction = 'static'
+            self.frame = 0  # Frame index for animation
+            self.animation_speed = 10  # Speed of animation, lower is faster
+            self.animation_counter = 0  # Counter for animation speed
+
             self.counter = 3
             self.add_time = False  # Variable to track whether to add or subtract time
             self.sub_time = False  # Variable to track whether to add or subtract time
@@ -54,32 +75,37 @@ def play():
                 self.move_single_axis(0, dy * speed)
 
         def move_single_axis(self, dx, dy):
-        
             self.rect.x += dx
             self.rect.y += dy
-    
+
             for wall in walls:
                 if self.rect.colliderect(wall.rect):
-                    if dx > 0: # Moving right; Hit the left side of the wall
+                    if dx > 0:
                         self.rect.right = wall.rect.left
-                    if dx < 0: # Moving left; Hit the right side of the wall
+                    if dx < 0:
                         self.rect.left = wall.rect.right
-                    if dy > 0: # Moving down; Hit the top side of the wall
+                    if dy > 0:
                         self.rect.bottom = wall.rect.top
-                    if dy < 0: # Moving up; Hit the bottom side of the wall
+                    if dy < 0:
                         self.rect.top = wall.rect.bottom
 
-        def draw(self, screen, camera_offset):
-            if self.direction == 'left':
-                rotated_image = pygame.transform.rotate(self.image, 90)
-            elif self.direction == 'right':
-                rotated_image = pygame.transform.rotate(self.image, -90)
-            elif self.direction == 'down':
-                rotated_image = pygame.transform.rotate(self.image, 180)
-            else:
-                rotated_image = self.image
+        def update_image(self, direction):
+            if direction != self.direction:
+                if direction in self.images:
+                    self.image = self.images[direction][0]
+                    self.direction = direction
+                    self.frame = 0
 
-            screen.blit(rotated_image, self.rect.move(camera_offset))
+        def draw(self, screen, camera_offset):
+            # Update animation
+            self.animation_counter += 1
+            if self.animation_counter >= self.animation_speed:
+                self.frame = (self.frame + 1) % len(self.images[self.direction])
+                self.image = self.images[self.direction][self.frame]
+                self.animation_counter = 0
+
+            screen.blit(self.image, self.rect.move(camera_offset))
+
 
     class Bus:
         def __init__(self, x, y, max_distance, stop_duration):
@@ -98,16 +124,16 @@ def play():
             distance_x = self.rect.x - player_rect.x
             distance_y = abs(self.rect.y - player_rect.y)
 
-            if distance_y <= 140 and distance_x > -210 and distance_x < 0:
+            if distance_y <= 185 and distance_x > -210 and distance_x < 0:
                 self.finish = True
                 return self.finish
             else:
                 if distance_x < self.max_distance and self.stop_timer <= 1:
                     self.rect.x += self.speed
                     self.distance_traveled += self.speed
-                    if self.distance_traveled > 2200:
+                    if self.distance_traveled > 3300:
                         self.stop_timer = self.stop_duration
-                        self.distance_traveled = 0
+                        self.distance_traveled = 0      
 
             if self.stop_timer > 0:
                 self.stop_timer -= 1
@@ -118,14 +144,25 @@ def play():
 
     class Obstacle:
         def __init__(self, x, y):
-            self.image = pygame.Surface((20, 20))
-            self.image.fill(RED)
+            self.image = pygame.image.load(f"sprites/bus/{transport[random.randint(0, 4)]}.png")
+            self.image = pygame.transform.scale(self.image, (75, 50))
             self.rect = self.image.get_rect()
             self.rect.center = (x, y)
             self.speed = 3
 
         def move(self):
             self.rect.move_ip(-self.speed, 0)
+
+        def draw(self, screen, camera_offset):
+            screen.blit(self.image, self.rect.move(camera_offset))
+
+    class People(pygame.sprite.Sprite):
+        def __init__(self, pos):
+            super().__init__()
+            self.rect = pygame.Rect(pos[0], pos[1], 50, 50)
+            self.image = pygame.image.load(f"sprites/bus/челик{random.randint(2, 3)}.png")
+            self.image = pygame.transform.rotate(self.image, 90 * random.randint(0, 3))
+            self.image = pygame.transform.scale(self.image, (50, 50))
 
         def draw(self, screen, camera_offset):
             screen.blit(self.image, self.rect.move(camera_offset))
@@ -146,26 +183,27 @@ def play():
             super().__init__()
             self.rect = pygame.Rect(pos[0], pos[1], 20, 20)
             if key_type == 'greenapple':
-                self.image = pygame.image.load("sprites/maze/greenapple.png")
+                self.image = pygame.image.load("sprites/bus/greenapple.png")
             elif key_type == 'redapple':
-                self.image = pygame.image.load("sprites/maze/redapple.png")
+                self.image = pygame.image.load("sprites/bus/redapple.png")
             self.image = pygame.transform.scale(self.image, (20, 20))
             self.key_type = key_type
         def draw(self, screen, camera_offset):
             screen.blit(self.image, self.rect.move(camera_offset))
 
     # Create bus
-    bus = Bus(SCREEN_WIDTH // 2 - 150, 25, 1100, 120)
+    bus = Bus(SCREEN_WIDTH // 2 - 150, 75, 1100, 120)
 
     # Obstacles (People)
     obstacles = []
-    obstacle_spawn_rate = 60
-    obstacle_counter = 0
+    obstacle_spawn_rate = 90
+    obstacle_counter = 1
 
-    font = pygame.font.SysFont('Aries', 40)
+    font = pygame.font.Font("fonts/superfont.ttf", 23)
     all_sprites_list = pygame.sprite.Group()
     keys = []
-    walls = [] 
+    walls = []
+    people = [] 
     player = Player() 
     
     # Define the regions where blocks can appear (in this case, a strip in the middle of the level)
@@ -184,41 +222,41 @@ def play():
     for level_index in range(15):
         available_positions = []
         level = [
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                   WWWWWWWWWWWWWWWWW                                                                          ",
-        "                   W               W                                                                          ",
-        "                   W               W                                                                          ",
-        "                   W               W                                                                          ",
-        "                   W               W                                                                          ",
-        "                   W               W                                                                          ",
-        "WWWWWWWWWWWWWWWWWWWW               WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "                                                                                                              ",
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-        "W                                                                                                            W",
-        "W                                                                                                            W",
-        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                   WWWWWWWWWWWWWWWWW                                                                                                                                 ",
+        "                   W               W                                                                                                                                 ",
+        "                   W               W                                                                                                                                 ",
+        "                   W               W                                                                                                                                 ",
+        "                   W               W                                                                                                                                 ",
+        "                   W               W                                                                                                                                 ",
+        "WWWWWWWWWWWWWWWWWWWW               WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "                                                                                                                                                                     ",
+        "                                                                                                                                                                     ",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
         ]
     
         x_offset = level_index * len(level[0]) * 20  # Calculate the x-offset for each level
@@ -237,7 +275,7 @@ def play():
             if available_positions:
                 pos = available_positions.pop()
                 # Create block at pos
-                Wall(pos)
+                people.append(People(pos))
 
         # Create gold keys
         for _ in range(num_gold_keys):
@@ -293,16 +331,16 @@ def play():
             key = pygame.key.get_pressed()
             if key[K_UP] and knockback_timer <= 0 and player.rect.top > 0:
                 player.move(0, -2)
-                player.direction = 'up'
+                player.update_image('up')
             if key[K_DOWN] and knockback_timer <= 0 and player.rect.bottom < SCREEN_HEIGHT:
                 player.move(0, 2)
-                player.direction = 'down'
+                player.update_image('down')
             if key[K_LEFT] and knockback_timer <= 0:
                 player.move(-2, 0)
-                player.direction = 'left'
+                player.update_image('left')
             if key[K_RIGHT] and knockback_timer <= 0:
                 player.move(2, 0)
-                player.direction = 'right'
+                player.update_image('right')
 
             for key in keys:
                 if player.rect.colliderect(key.rect):
@@ -347,13 +385,16 @@ def play():
                 knockback_timer -= 1
 
             # Draw everything
-            screen.fill(WHITE)            
-            screen.blit(bus_stop, (camera_offset[0], camera_offset[1]))
-            screen.blit(road, (camera_offset[0] + 1100, camera_offset[1]))
-            screen.blit(road2, (camera_offset[0] + 2200, camera_offset[1]))
+            screen.fill(WHITE)
+            for i in range(6):            
+                screen.blit(bus_stop, (camera_offset[0] + i * 3300, camera_offset[1]))
+                screen.blit(road, (camera_offset[0] + 1100 + i * 3300, camera_offset[1]))
+                screen.blit(road2, (camera_offset[0] - 1100 + i * 3300, camera_offset[1]))
 
             for wall in walls:
                 wall.draw(screen, camera_offset)
+            for person in people:
+                person.draw(screen, camera_offset)
             for key in keys:  
                 key.draw(screen, camera_offset)
 

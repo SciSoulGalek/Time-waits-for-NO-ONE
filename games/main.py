@@ -128,6 +128,8 @@ def back_in_time(timer):
             if event.type == TIMER:
                 timer += 1
             if event.type == pygame.QUIT:
+                elapse.stop()
+                play_music()
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
@@ -213,25 +215,25 @@ def main_menu():
 
                 if win1 == True:
                     win2, timer_text = earthquake.play(timer_text)
-                    if win2:
+                    if win2 == True:
                         win3, timer_text = alien.play(timer_text)
-                        if win3:
+                        if win3 == True:
                             win_screen()
                             continue
-                        elif win3 == None:
+                        if win3 == None:
                             play_music()
                             continue
-                        else:
+                        if win3 == False:
                             back_in_time(timer)
-                    elif win2 == None:
+                    if win2 == None:
                         play_music()
                         continue
-                    else:
+                    if win2 == False:
                         back_in_time(timer)
-                elif win1 == None:
+                if win1 == None:
                     play_music()
                     continue
-                else:
+                if win1 == False:
                     back_in_time(timer)
                     
             elif action == 2:
