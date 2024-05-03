@@ -1,6 +1,7 @@
 import pygame
 import random
 from pygame.locals import *
+from datetime import datetime, timedelta
 def play():
     # Initialize pygame
     pygame.init()
@@ -17,6 +18,10 @@ def play():
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
+
+    lose_screen1 = pygame.image.load("sprites/final/lose.png")
+    lose_screen2 = pygame.image.load("sprites/final/losech.png")
+    lose_screen3 = pygame.image.load("sprites/main/yourelateloss.png")
 
     class Player(pygame.sprite.Sprite):
 
@@ -53,17 +58,6 @@ def play():
                     if dy < 0: # Moving up; Hit the bottom side of the wall
                         self.rect.top = wall.rect.bottom
 
-            # for key in keys:
-            #     if self.rect.colliderect(key.rect):
-            #         if key.key_type == 'greenapple':
-            #             self.add_time = True  # Set add_time to True when picking up a green apple
-            #         elif key.key_type == 'redapple':
-            #             self.sub_time = True  # Set add_time to False when picking up a red apple
-            #         key.rect.x = 2000
-            #         key.rect.y = 2000
-            #         self.counter -= 1
-
-
         def draw(self, screen, camera_offset):
             if self.direction == 'left':
                 rotated_image = pygame.transform.rotate(self.image, 90)
@@ -87,13 +81,15 @@ def play():
             self.stop_duration = stop_duration
             self.distance_traveled = 0
             self.stop_timer = 0
+            self.finish = False
 
         def move(self, player_rect):
             distance_x = self.rect.x - player_rect.x
             distance_y = abs(self.rect.y - player_rect.y)
 
             if distance_y <= 140 and distance_x > -210 and distance_x < 0:
-                print("Catched")
+                self.finish = True
+                return self.finish
             else:
                 if distance_x < self.max_distance and self.stop_timer <= 1:
                     self.rect.x += self.speed
@@ -155,15 +151,12 @@ def play():
     obstacle_spawn_rate = 60
     obstacle_counter = 0
 
+    font = pygame.font.SysFont('Aries', 40)
     all_sprites_list = pygame.sprite.Group()
     keys = []
     walls = [] 
     player = Player() 
     
-    # Define the regions where blocks can appear (in this case, a strip in the middle of the level)
-    key_region_start = 16
-    key_region_end = 30
-
     # Define the regions where blocks can appear (in this case, a strip in the middle of the level)
     block_region_start = 16
     block_region_end = 30
@@ -173,9 +166,12 @@ def play():
     num_silver_keys = 3
     
     # Keep track of available positions to place blocks
-    available_positions = []
     
+    for i in range(35):
+        Wall((-20, 0 + 20 * i))
+
     for level_index in range(15):
+        available_positions = []
         level = [
         "                                                       ",
         "                                                       ",
@@ -226,7 +222,7 @@ def play():
         random.shuffle(available_positions)
 
         # Create blocks at randomly selected positions within the central side region
-        for _ in range(20):  # Adjust the number of blocks as needed
+        for _ in range(10):  # Adjust the number of blocks as needed
             if available_positions:
                 pos = available_positions.pop()
                 print(f"Creating block at position {pos}")
@@ -249,82 +245,125 @@ def play():
     camera_offset = [0, 0]
 
     clock = pygame.time.Clock()
+
+    #Start time
+    start_time = datetime.strptime("08:30", "%H:%M")
+    add_minute = True
+    lose_screen = False
+
     # Game loop
     running = True
     knockback_timer = 0
     while running:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                running = False
+        if not lose_screen:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    return None, timer_text
+                
+            # Update time
+            current_time = datetime.now()
+            elapsed_time = current_time - start_time
+            # Check if the minute should be added
+            if elapsed_time.seconds % 10 == 0 and add_minute:
+                start_time += timedelta(minutes=1)
+                add_minute = False  # Set the flag to False to indicate that the minute has been added
+            elif elapsed_time.seconds % 10 != 0:
+                add_minute = True  # Reset the flag if the condition is no longer true
+            # Adjust time based on key pickup
+            if player.add_time:
+                start_time += timedelta(minutes=1)  # Add a minute to the start time
+                player.add_time = False  # Reset add_time to False
+            elif player.sub_time:
+                start_time -= timedelta(minutes=1)  # Subtract a minute from the start time
+                player.sub_time = False  # Reset sub_time to False
 
-        key = pygame.key.get_pressed()
-        if key[K_UP] and knockback_timer <= 0 and player.rect.top > 0:
-            player.move(0, -2)
-            player.direction = 'up'
-        if key[K_DOWN] and knockback_timer <= 0 and player.rect.bottom < SCREEN_HEIGHT:
-            player.move(0, 2)
-            player.direction = 'down'
-        if key[K_LEFT] and knockback_timer <= 0:
-            player.move(-2, 0)
-            player.direction = 'left'
-        if key[K_RIGHT] and knockback_timer <= 0:
-            player.move(2, 0)
-            player.direction = 'right'
+            # Render time
+            timer_text = start_time.strftime("%H:%M")
 
-        for key in keys:
-            if player.rect.colliderect(key.rect):
-                if key.key_type == 'greenapple':
-                    player.add_time = True  # Set add_time to True when picking up a green apple
-                elif key.key_type == 'redapple':
-                    player.sub_time = False  # Set add_time to False when picking up a red apple
-                key.rect.x = 2000
-                key.rect.y = 2000
-                player.counter -= 1
+            key = pygame.key.get_pressed()
+            if key[K_UP] and knockback_timer <= 0 and player.rect.top > 0:
+                player.move(0, -2)
+                player.direction = 'up'
+            if key[K_DOWN] and knockback_timer <= 0 and player.rect.bottom < SCREEN_HEIGHT:
+                player.move(0, 2)
+                player.direction = 'down'
+            if key[K_LEFT] and knockback_timer <= 0:
+                player.move(-2, 0)
+                player.direction = 'left'
+            if key[K_RIGHT] and knockback_timer <= 0:
+                player.move(2, 0)
+                player.direction = 'right'
 
-        # Update camera offset to center on the player
-        camera_offset[0] = -(player.rect.centerx - SCREEN_WIDTH // 2)
-    
-        # Move the bus
-        bus.move(player.rect)
+            for key in keys:
+                if player.rect.colliderect(key.rect):
+                    if key.key_type == 'greenapple':
+                        player.add_time = True  # Set add_time to True when picking up a green apple
+                    elif key.key_type == 'redapple':
+                        player.sub_time = True  # Set add_time to False when picking up a red apple
+                    key.rect.x = 2000
+                    key.rect.y = 2000
+                    player.counter -= 1
 
-        # Update obstacles
-        if obstacle_counter % obstacle_spawn_rate == 0:
-            spawn_x = SCREEN_WIDTH + player.rect.x + random.randint(0, 200)
-            spawn_y = random.randint(320, 600)
-            obstacles.append(Obstacle(spawn_x, spawn_y))
-        obstacle_counter += 1
+            # Update camera offset to center on the player
+            camera_offset[0] = -(player.rect.centerx - SCREEN_WIDTH // 2)
 
-        for obstacle in obstacles:
-            # Check for collision with player
-            if player.rect.colliderect(obstacle.rect):
-                # Push the player back if it collides with the obstacle
-                player.move(-obstacle.speed, 0)
-                # Start the knockback timer
-                knockback_timer = 1  # 1 second at 60 FPS
-            else:
-                obstacle.move()
-            if obstacle.rect.right < 0:
-                obstacles.remove(obstacle)
+            # Move the bus
+            bus.move(player.rect)
 
-        # Decrease knockback timer and restore player control if knockback period is over
-        if knockback_timer > 0:
-            knockback_timer -= 1
+            if bus.finish:
+                return True, timer_text
 
-        # Draw everything
-        screen.fill(WHITE)
+            # Update obstacles
+            if obstacle_counter % obstacle_spawn_rate == 0:
+                spawn_x = SCREEN_WIDTH + player.rect.x + random.randint(0, 200)
+                spawn_y = random.randint(320, 600)
+                obstacles.append(Obstacle(spawn_x, spawn_y))
+            obstacle_counter += 1
+
+            for obstacle in obstacles:
+                # Check for collision with player
+                if player.rect.colliderect(obstacle.rect):
+                    # Push the player back if it collides with the obstacle
+                    player.move(-obstacle.speed, 0)
+                    # Start the knockback timer
+                    knockback_timer = 1  # 1 second at 60 FPS
+                else:
+                    obstacle.move()
+                if obstacle.rect.right < 0:
+                    obstacles.remove(obstacle)
+
+            # Decrease knockback timer and restore player control if knockback period is over
+            if knockback_timer > 0:
+                knockback_timer -= 1
+
+            # Draw everything
+            screen.fill(WHITE)
+
+            for wall in walls:
+                wall.draw(screen, camera_offset)
+            for key in keys:  
+                key.draw(screen, camera_offset)
+
+            all_sprites_list.draw(screen)
+            bus.draw(screen, camera_offset)
+            player.draw(screen, camera_offset)
+            for obstacle in obstacles:
+                obstacle.draw(screen, camera_offset)
+
+            # Render text
+            timer_surface = font.render(timer_text, True, (255, 255, 255))
+            screen.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
+
+            if timer_text == '09:00':
+                lose_screen = True
+            pygame.display.flip()
+            clock.tick(60)
         
-        for wall in walls:
-            wall.draw(screen, camera_offset)
-        for key in keys:  
-            key.draw(screen, camera_offset)
-
-        all_sprites_list.draw(screen)
-        bus.draw(screen, camera_offset)
-        player.draw(screen, camera_offset)
-        for obstacle in obstacles:
-            obstacle.draw(screen, camera_offset)
-
-        pygame.display.flip()
-        clock.tick(60)
-
-play()
+        else:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    return False, timer_text
+            screen.blit(lose_screen1, (0, 0))
+            screen.blit(lose_screen2, (0, 200))
+            screen.blit(lose_screen3 , (380, 150))
+            pygame.display.update()
