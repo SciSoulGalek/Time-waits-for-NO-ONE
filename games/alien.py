@@ -12,7 +12,7 @@ def play(timer_text):
     RECT_WIDTH = 750
     RECT_HEIGHT = 360
     BG_IMAGE_PATH = 'sprites/alien/square/quiz.png'  # Change this to the path of your image
-    QUESTION_FONT_SIZE = 36
+    QUESTION_FONT_SIZE = 30
     ANSWER_FONT_SIZE = 28
     BUTTON_WIDTH = 350
     BUTTON_HEIGHT = 40
@@ -23,8 +23,8 @@ def play(timer_text):
     # Initialize fonts
     question_font = pygame.font.Font(None, QUESTION_FONT_SIZE)
     answer_font = pygame.font.Font(None, ANSWER_FONT_SIZE)
-    score_font = pygame.font.Font(None, 28)
-    font = pygame.font.Font("fonts/superfont.ttf", 22)
+    score_font = pygame.font.Font("fonts/superfont.ttf", 28)
+    font = pygame.font.Font("fonts/superfont.ttf", 23)
     
     start_time = datetime.strptime(timer_text, "%H:%M")
 
@@ -142,6 +142,7 @@ def play(timer_text):
     gone_screen1 = pygame.image.load("sprites/final/alien.png")
     gone_screen2 = pygame.image.load("sprites/final/aliench.png")
     gone_screen3 = pygame.image.load("sprites/main/yourelateloss.png")
+    lose_sound= pygame.mixer.Sound("sound/main/losesound.mp3")
     
     next_counter = 0
 
@@ -156,7 +157,6 @@ def play(timer_text):
     add_minute = True
     result = False
     changed = False
-
     bgsound.play()
     while running:
         if cutscene:
@@ -198,7 +198,7 @@ def play(timer_text):
 
             if next_counter == 6:
                 screen.blit(dialog2, (0, 0))
-                screen.blit(dialog_text2_part4, (175, 575))
+                screen.blit(dialog_text2_part4, (110, 575))
             
             if next_counter == 7:
                 screen.blit(dialog1, (0, 0))
@@ -216,6 +216,7 @@ def play(timer_text):
                 if event.type == pygame.QUIT:
                     return False, timer_text
             if score >= 4:
+                lose_sound.play()
                 screen.blit(gone_screen1, (0, 0))
                 screen.blit(gone_screen2, (0, 400))
                 screen.blit(gone_screen3, (380, 150))
@@ -226,6 +227,7 @@ def play(timer_text):
         else:
             # Handle events
             bgsound.stop()
+            lose_sound.stop()
     
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -258,9 +260,9 @@ def play(timer_text):
                 if current_question_index == 0:
                     elapsed_ticks_time = 0
                 changed = True
+
             
             remaining_time = max(0, QUESTION_DURATION - elapsed_ticks_time)
-            
             current_time = datetime.now()
             elapsed_time = current_time - start_time
             # Check if the minute should be added
@@ -304,19 +306,19 @@ def play(timer_text):
 
             # Render the timer at the top center of the screen
             timer_text_quiz = f"Time left: {remaining_time}s"
-            timer_surface_quiz = question_font.render(timer_text_quiz, True, (255, 255, 255))
+            timer_surface_quiz = font.render(timer_text_quiz, True, (255, 255, 255))
             timer_x = current_width // 2 - timer_surface_quiz.get_width() // 2
             timer_y = 20
             screen.blit(timer_surface_quiz, (timer_x, timer_y))
 
             # Render the score at the top right of the screen
             score_text = f"Score: {score}"
-            score_surface = score_font.render(score_text, True, (255, 255, 255))
+            score_surface = font.render(score_text, True, (255, 255, 255))
             score_x = 20
             score_y = 20
             screen.blit(score_surface, (score_x, score_y))
         
-            timer_surface = question_font.render(timer_text, True, (255, 255, 255))
+            timer_surface = font.render(timer_text, True, (255, 255, 255))
             screen.blit(timer_surface, (1050 - timer_surface.get_width() // 2, 20))
             
             # Check if time is up for the current question
@@ -331,4 +333,5 @@ def play(timer_text):
 
             # Update the display
             pygame.display.flip()
+
 
